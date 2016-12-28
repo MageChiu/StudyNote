@@ -1,8 +1,10 @@
 # ssl交互握手过程  
 
-http://image.beekka.com/blog/2014/bg2014092002.png
+![](http://image.beekka.com/blog/2014/bg2014092002.png)
 
-握手阶段分为五部分
+握手阶段分为五部分：
+
+
 `
 第一步，爱丽丝给出协议版本号、一个客户端生成的随机数（Client random），以及客户端支持的加密方法。
 第二步，鲍勃确认双方使用的加密方法，并给出数字证书、以及一个服务器生成的随机数（Server random）。
@@ -12,4 +14,4 @@ http://image.beekka.com/blog/2014/bg2014092002.png
 `
 
 
-http://image.beekka.com/blog/2014/bg2014092003.png
+![](http://image.beekka.com/blog/2014/bg2014092003.png)
