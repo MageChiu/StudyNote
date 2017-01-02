@@ -67,6 +67,7 @@ CURLcode curl_easy_getinfo(CURL *curl, CURLINFO info, ... );
 ```
 
 获取时间
+
 | 字段名 | 功能 | 获取 |
 |:----:|:---:|:---:|
 |CURLINFO_APPCONNECT_TIME | ssl握手时间|double|
