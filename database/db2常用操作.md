@@ -12,6 +12,9 @@ db2 connect to <dbname> user <dbuser>
 # db2look导出表结构
 
 
+# grant
+
+
 # db2move
 
 # 查询端口
