@@ -33,3 +33,5 @@ openssl req -config openssl.cnf -key EccSite.key -new -out EccSite.req
 openssl x509 -req -in EccSite.req -CA EccCA.pem -CAkey EccCA.key -out EccSite.pem -CAcreateserial
 ```
 
+这里的prime256v1
+
