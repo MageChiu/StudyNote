@@ -73,7 +73,35 @@ openssl pkcs12 -in ${CAName}.pfx -out ${CAName}.pem
 openssl x509 -outform der -in ${CAName}.pem -out ${CAName}.der
 
 
-
 ```
 
+下面是详细的单步步骤：
+
+``` shell
+SUBJECT="/C=CN/ST=BJ/L=BJ/O=bky"
+# 生成CA证书
+mkdir -p demoCA/newcerts
+touch ./demoCA/index.txt
+echo 01 > ./demoCA/serial
+openssl genrsa -des3 -out serverCA.key 2048
+openssl req -new -x509 -key serverCA.key -out serverCA.crt
+
+# 生成client证书
+openssl genrsa -des3 -out serverssl.key 2048
+openssl req -new -key serverssl.key -out serverssl.csr
+
+
+# 签发证书
+openssl ca -in serverssl.csr -out serverssl.crt -cert serverCA.crt -keyfile serverCA.key 
+
+# 格式转化
+# serverssl格式转化
+openssl pkcs12 -export -in serverssl.crt -inkey serverssl.key -out serverssl.pfx
+openssl pkcs12 -in serverssl.pfx -out serverssl.pem 
+openssl x509 -outform der -in serverssl.pem -out serverssl.der
+# servereCA格式转换
+openssl pkcs12 -export -in serverCA.crt -inkey serverCA.key -out serverCA.pfx
+openssl pkcs12 -in serverCA.pfx -out serverCA.pem
+openssl x509 -outform der -in serverCA.pem -out serverCA.der
+```
 

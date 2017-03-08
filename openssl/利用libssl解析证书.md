@@ -25,6 +25,87 @@ void OpenSSL_add_all_algorithms(void)
 
 ```
 
+2. 这里还需要介绍一些公用的函数，base64编解码函数
+
+``` C
+int Base64Encode(const char * input, int length,char* buff, bool with_new_line)  
+{  
+    BIO * bmem = NULL;  
+    BIO * b64 = NULL;  
+    BUF_MEM * bptr = NULL;  
+    b64 = BIO_new(BIO_f_base64());  
+    if(!with_new_line) {  
+        BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);  
+    }  
+    bmem = BIO_new(BIO_s_mem());  
+    b64 = BIO_push(b64, bmem);  
+    BIO_write(b64, input, length);  
+    BIO_flush(b64);  
+    BIO_get_mem_ptr(b64, &bptr);  
+    //char * buff = (char *)malloc(bptr->length + 1);  
+    memcpy(buff, bptr->data, bptr->length);  
+    buff[bptr->length] = 0;   
+    BIO_free_all(b64);   
+    //return buff;  
+    return length;
+}  
+  
+int Base64Decode(char * input, int length,char* buffer, bool with_new_line)  
+{  
+    BIO * b64 = NULL;  
+    BIO * bmem = NULL;  
+    //char * buffer = (char *)malloc(length);  
+    //memset(buffer, 0, length);   
+    b64 = BIO_new(BIO_f_base64());  
+    if(!with_new_line) {  
+        BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);  
+    }  
+    bmem = BIO_new_mem_buf(input, length);  
+    bmem = BIO_push(b64, bmem);  
+    BIO_read(bmem, buffer, length);   
+    BIO_free_all(bmem);  
+    //return buffer;
+    return length;
+} 
+```
+
+3. 从ASN1_TIME转化为time_t
+
+``` C
+static time_t ASN1_GetTimeT(ASN1_TIME* time){
+    struct tm t;
+    const char* str = (const char*) time->data;
+    size_t i = 0;
+
+    memset(&t, 0, sizeof(t));
+
+    if (time->type == V_ASN1_UTCTIME) {/* two digit year */
+        t.tm_year = (str[i++] - '0') * 10;
+        t.tm_year += (str[i++] - '0');
+        if (t.tm_year < 70)
+            t.tm_year += 100;
+    } else if (time->type == V_ASN1_GENERALIZEDTIME) {/* four digit year */
+        t.tm_year = (str[i++] - '0') * 1000;
+        t.tm_year+= (str[i++] - '0') * 100;
+        t.tm_year+= (str[i++] - '0') * 10;
+        t.tm_year+= (str[i++] - '0');
+        t.tm_year -= 1900;
+    }
+    t.tm_mon  = (str[i++] - '0') * 10;
+    t.tm_mon += (str[i++] - '0') - 1; // -1 since January is 0 not 1.
+    t.tm_mday = (str[i++] - '0') * 10;
+    t.tm_mday+= (str[i++] - '0');
+    t.tm_hour = (str[i++] - '0') * 10;
+    t.tm_hour+= (str[i++] - '0');
+    t.tm_min  = (str[i++] - '0') * 10;
+    t.tm_min += (str[i++] - '0');
+    t.tm_sec  = (str[i++] - '0') * 10;
+    t.tm_sec += (str[i++] - '0');
+    /* Note: we did not adjust the time based on time zone information */
+    return mktime(&t);
+}
+```
+
 
 ## 解析的流程
 
@@ -60,6 +141,8 @@ certPath为证书的路径
 ### 解析X509结构
 
 #### 获取version
+
+这里主要使用的函数为`long X509_get_version`
 
 #### 获取序列号
 
@@ -156,16 +239,103 @@ struct evp_pkey_st
     } /* EV  
 ```
 
-
+首先这里通过函数`EVP_PKEY *X509_get_pubkey(X509 *x)`从X509结构中获取`EVP_PKEY`结构，
 
 ``` C
-
+    pubKey = X509_get_pubkey(rootCert);
+    if(!pubKey){
+        //printf("public key is null");
+    }
+    else if(EVP_PKEY_RSA == pubKey->type)  
+    {  
+        pubKeyType = EVP_PKEY_RSA;  
+        rsa = EVP_PKEY_get1_RSA(pubKey);
+        //RSA_print_fp(stdout,rsa,0);
+        memset(big_buf,0x00,sizeof(big_buf));
+        tmp_i=rsa2str(rsa,big_buf,sizeof(big_buf));
+        //printf("pubKey[%d][%d]",pubKey->type,__LINE__);
+    } 
+    else if(EVP_PKEY_EC == pubKey->type)  
+    {  
+        pubKeyType = EVP_PKEY_EC;
+        ecc = EVP_PKEY_get1_EC_KEY(pubKey);
+        tmp_i=ecc2str(ecc,big_buf,sizeof(big_buf));
+        //printf("pubKey[%d][%d]",pubKey->type,__LINE__);
+    }  
+    else if (EVP_PKEY_DSA == pubKey->type)  
+    {  
+        pubKeyType = EVP_PKEY_DSA;  
+        dsa = EVP_PKEY_get1_DSA(pubKey);
+        tmp_i=dsa2str(dsa,big_buf,sizeof(big_buf));
+        //printf("pubKey[%d][%d]",pubKey->type,__LINE__);
+    }  
+    else if (EVP_PKEY_DH == pubKey->type)  
+    {  
+        pubKeyType = EVP_PKEY_DH;  
+        dh = EVP_PKEY_get1_DH(pubKey);
+        tmp_i=dh2str(pubKey,dh,big_buf,sizeof(big_buf));
+        //printf("pubKey[%d][%d]",pubKey->type,__LINE__);
+    }  
+    else  
+    {  
+        return -1;  
+    }
 ```
 
+上面的代码中`ALG##2str`函数为从对应的结构中获取公钥的base64编码的字符串
 
+
+1. 从rsa结构中获取公钥
 
 ``` C
-
+static int rsa2str(RSA* rsa,char *outBuf, int outLen)
+{
+    int rsa_len = 0;
+    RSA* pub_key = rsa;
+    BIGNUM *n = NULL;
+    BIGNUM *e = NULL;
+    long len = 0;
+    int i = 0;
+    unsigned char pk_hex[8192+1];
+    unsigned char* p_pk_hex = pk_hex;
+    rsa_len = RSA_size(pub_key) * 8;
+    memset(pk_hex,0x00,sizeof(pk_hex));
+    //RSA_print_fp(stdout,pub_key,0);
+    len = i2d_RSAPublicKey(rsa,(const char**)&p_pk_hex);
+    //printf("\ntest[%d][%02X][%s]\n",len,pk_hex[2],pk_hex+1);
+    //for(i=0;i<len;i++)
+    //    sprintf(outBuf+i*2,"%02X",pk_hex[i]);
+    //printf("convert over\n");
+    //n = rsa->n;
+    //e = rsa->e;
+    
+    p_pk_hex = pk_hex;
+    Base64Encode(p_pk_hex,len,outBuf,true);
+    
+    //char tmp_buf[4096+1]={0};
+    //Base64Decode(outBuf,strlen(outBuf),tmp_buf,true);
+    //
+    //p_pk_hex = tmp_buf;
+    //RSA* test=d2i_RSAPublicKey(NULL,(const unsigned char**)&p_pk_hex,len);
+    ////test->n=n;
+    ////test->e=e;
+    //if(test==NULL)
+    //{
+    //    printf("NULL\n");
+    //    char err[1024]={0};
+    //    ERR_error_string(ERR_get_error(), err); 
+    //    printf("Failed to DER decode public key : %s\n", err); 
+    //    return -1;
+    //}
+    //else 
+    //{ 
+    //    
+    //}
+    //
+    //printf("new Key\n");
+    //RSA_print_fp(stdout,test,0);
+    return rsa_len;
+}
 ```
 
 ## 常用的openssl证书解析函数
