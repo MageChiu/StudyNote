@@ -131,6 +131,59 @@ rootCert = d2i_X509(NULL,(unsigned const char **)&pTmp,derRooCertLen);
 ```
 certPath为证书的路径
 
+然后获取X509结构，该结构如下：
+
+``` C
+struct x509_st  
+{  
+    X509_CINF *cert_info;  
+    X509_ALGOR *sig_alg;  
+    ASN1_BIT_STRING *signature;  
+    int valid;  
+    int references;  
+    char *name;  
+    CRYPTO_EX_DATA ex_data;  
+    /* These contain copies of various extension values */  
+    long ex_pathlen;  
+    long ex_pcpathlen;  
+    unsigned long ex_flags;  
+    unsigned long ex_kusage;  
+    unsigned long ex_xkusage;  
+    unsigned long ex_nscert;  
+    ASN1_OCTET_STRING *skid;  
+    AUTHORITY_KEYID *akid;  
+    X509_POLICY_CACHE *policy_cache;  
+    STACK_OF(DIST_POINT) *crldp;  
+    STACK_OF(GENERAL_NAME) *altname;  
+    NAME_CONSTRAINTS *nc;  
+#ifndef OPENSSL_NO_RFC3779  
+    STACK_OF(IPAddressFamily) *rfc3779_addr;  
+    struct ASIdentifiers_st *rfc3779_asid;  
+#endif  
+#ifndef OPENSSL_NO_SHA  
+    unsigned char sha1_hash[SHA_DIGEST_LENGTH];  
+#endif  
+    X509_CERT_AUX *aux;  
+} /* X509 */;  
+  
+typedef struct x509_cinf_st  
+{  
+    ASN1_INTEGER *version;      /* [ 0 ] default of v1 */  
+    ASN1_INTEGER *serialNumber;  
+    X509_ALGOR *signature;  
+    X509_NAME *issuer;  
+    X509_VAL *validity;  
+    X509_NAME *subject;  
+    X509_PUBKEY *key;  
+    ASN1_BIT_STRING *issuerUID;     /* [ 1 ] optional in v2 */  
+    ASN1_BIT_STRING *subjectUID;        /* [ 2 ] optional in v2 */  
+    STACK_OF(X509_EXTENSION) *extensions;   /* [ 3 ] optional in v3 */  
+    ASN1_ENCODING enc;  
+} X509_CINF; 
+```
+
+该结构被定义在x509.h中
+
 
 
 ### 从`crt/pem`格式证书获取X509格式
@@ -151,65 +204,8 @@ certPath为证书的路径
 
 #### 获取公钥
 
-这里常用的有四种加密算法，因此证书中的公钥也有四种形式进行存放形式：
 
-1. RSA 结构rsa.h中，其中{n,e} 表示公钥，{n, d}表示私钥
-
-``` C
-struct rsa_st  
-    {  
-    .....  
-    BIGNUM *n;  
-    BIGNUM *e;  
-    BIGNUM *d;  
-    BIGNUM *p;  
-    BIGNUM *q;  
-    BIGNUM *dmp1;  
-    BIGNUM *dmq1;  
-    BIGNUM *iqmp;  
-        .....  
-    };  
-```
-
-2. DSA结构在dsa.h中
-
-``` C
-struct dsa_st  
-    {  
-    ......  
-    BIGNUM *p;  
-    BIGNUM *q;  /* == 20 */  
-    BIGNUM *g;  
-    BIGNUM *pub_key;  /* y public key */  
-    BIGNUM *priv_key; /* x private key */  
-        ......  
-    }; 
-```
-
-3. ECC结构在ecc.h
-
-``` C
-struct ec_key_st {  
-    EC_GROUP *group;  
-    EC_POINT *pub_key;  
-    BIGNUM   *priv_key;  
-} /* EC_KEY */; 
-```
-
-4. DH结构体在dh.h中定义
-
-``` C
-struct dh_st  
-    {
-    BIGNUM *p;  
-    BIGNUM *g;  
-    long length; /* optional */  
-    BIGNUM *pub_key;    /* g^x */  
-    BIGNUM *priv_key;   /* x */  
-    } 
-```
-
-5. EVP封装中的密钥结构EVP_PKEY
+首先，我们从X509的结构中通过函数`EVP_PKEY* X509_get_pubkey(X509 *x)`获取了EVP_PKEY，EVP_PKEY的结构如下：
 
 ``` C
 struct evp_pkey_st  
@@ -239,9 +235,9 @@ struct evp_pkey_st
     } /* EV  
 ```
 
-首先这里通过函数`EVP_PKEY *X509_get_pubkey(X509 *x)`从X509结构中获取`EVP_PKEY`结构，
+这里可以通过EVP_PKEY结构中的type来判断其中的保存的公钥是采用的什么算法：
 
-``` C
+``` c
     pubKey = X509_get_pubkey(rootCert);
     if(!pubKey){
         //printf("public key is null");
@@ -282,7 +278,92 @@ struct evp_pkey_st
     }
 ```
 
-上面的代码中`ALG##2str`函数为从对应的结构中获取公钥的base64编码的字符串
+对应不同的加密算法，证书中的公钥也有四种形式进行存放形式，这里仅仅针对了现行的openssl中的RSA，ECC，DSA，DH做了解析，SM2的解析会在后续补充。因此提取公钥的过程也与之类型相关，上面的代码中`ALG##2str`函数为从对应的结构中获取公钥的base64编码的字符串。
+
+1. RSA 结构rsa.h中，其中{n,e} 表示公钥，{n, d}表示私钥
+
+``` C
+struct rsa_st  
+    {  
+    .....  
+    BIGNUM *n;  
+    BIGNUM *e;  
+    BIGNUM *d;  
+    BIGNUM *p;  
+    BIGNUM *q;  
+    BIGNUM *dmp1;  
+    BIGNUM *dmq1;  
+    BIGNUM *iqmp;  
+        .....  
+    };  
+```
+
+因为这里是从证书中提取的RSA结构，主要是获取公钥，很有可能d没有值，当然这并不妨碍我们提取公钥。从RSA结构中提取公钥的函数很清晰：`:int i2d_RSAPublicKey(RSA *rsa,const unsigned char** p)`，因此我们的提取过程如下：
+
+``` c
+static int rsa2str(RSA* rsa,char *outBuf, int outLen)
+{
+    int rsa_len = 0;
+    RSA* pub_key = rsa;
+    BIGNUM *n = NULL;
+    BIGNUM *e = NULL;
+    long len = 0;
+    int i = 0;
+    unsigned char pk_hex[8192+1];
+    unsigned char* p_pk_hex = pk_hex;
+    rsa_len = RSA_size(pub_key) * 8;
+    memset(pk_hex,0x00,sizeof(pk_hex));
+    len = i2d_RSAPublicKey(rsa,(const unsigned char**)&p_pk_hex);
+    p_pk_hex = pk_hex;
+    Base64Encode(p_pk_hex,len,outBuf,true);
+    return rsa_len;
+}
+```
+
+
+2. DSA结构在dsa.h中
+
+``` C
+struct dsa_st  
+    {  
+    ......  
+    BIGNUM *p;  
+    BIGNUM *q;  /* == 20 */  
+    BIGNUM *g;  
+    BIGNUM *pub_key;  /* y public key */  
+    BIGNUM *priv_key; /* x private key */  
+        ......  
+    }; 
+```
+
+3. ECC结构在ecc.h
+
+``` C
+struct ec_key_st {  
+    EC_GROUP *group;  
+    EC_POINT *pub_key;  
+    BIGNUM   *priv_key;  
+} /* EC_KEY */; 
+```
+
+4. DH结构体在dh.h中定义
+
+``` C
+struct dh_st  
+    {
+    BIGNUM *p;  
+    BIGNUM *g;  
+    long length; /* optional */  
+    BIGNUM *pub_key;    /* g^x */  
+    BIGNUM *priv_key;   /* x */  
+    } 
+```
+
+
+
+
+
+
 
 
 1. 从rsa结构中获取公钥
