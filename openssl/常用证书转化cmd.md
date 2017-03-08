@@ -35,3 +35,45 @@ openssl x509 -req -in EccSite.req -CA EccCA.pem -CAkey EccCA.key -out EccSite.pe
 
 这里的prime256v1
 
+## 生成RSA算法证书
+首先是一个脚本的示例
+``` shell
+#########################################################################
+# File Name: CreateCA.sh
+# Author: Charles Chiu
+# mail: charles.r.chiu@gmail.com
+# Created Time: 2017年02月17日 星期五 15时31分52秒
+#########################################################################
+#!/bin/bash
+
+CA_Name=$1
+Client=$2
+CAName=${CA_Name}CA
+CName=$Client
+SUBJECT="/C=CN/ST=BJ/L=BJ/O=bky"
+mkdir -p demoCA/newcerts
+touch ./demoCA/index.txt
+echo 01 > ./demoCA/serial
+openssl genrsa -des3 -out ${CAName}.key 2048
+openssl req -new -x509 -key ${CAName}.key -out ${CAName}.crt
+
+# 生成client证书
+openssl genrsa -des3 -out ${CName}.key 2048
+openssl req -new -key ${CName}.key -out ${CName}.csr
+
+# 
+openssl ca -in ${CName}.csr -out ${CName}.crt -cert ${CAName}.crt -keyfile ${CAName}.key 
+
+openssl pkcs12 -export -in ${CName}.crt -inkey ${CName}.key -out ${CName}.pfx
+openssl pkcs12 -in ${CName}.pfx -out ${CName}.pem 
+openssl x509 -outform der -in ${CName}.pem -out ${CName}.der
+
+openssl pkcs12 -export -in ${CAName}.crt -inkey ${CAName}.key -out ${CAName}.pfx
+openssl pkcs12 -in ${CAName}.pfx -out ${CAName}.pem
+openssl x509 -outform der -in ${CAName}.pem -out ${CAName}.der
+
+
+
+```
+
+
