@@ -235,6 +235,8 @@ struct evp_pkey_st
     } /* EV  
 ```
 
+在这个结构中采用了共用体![](../res/img/利用libssl解析证书001.png)
+
 这里可以通过EVP_PKEY结构中的type来判断其中的保存的公钥是采用的什么算法：
 
 ``` c
