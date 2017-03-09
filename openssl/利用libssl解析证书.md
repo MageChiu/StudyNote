@@ -188,19 +188,193 @@ typedef struct x509_cinf_st
 
 ### 从`crt/pem`格式证书获取X509格式
 
+通过函数`PEM_read_X509`从pem格式的文件中获取X509结构，具体步骤实例如下：
+
+``` cpp
+if(strcmp(buf10,"pem")==0 || strcmp(buf10,"crt")==0)
+{
+    //printf("file type is pem\n");
+    rootCert=PEM_read_X509(fp,&rootCert,NULL,NULL);
+}
+```
+
+上面的代码片段中，获取了X509结构。
+
 ### 从`p12/pfx`格式证书获取X509格式
 
+与上面的两种格式不同，pfx格式的文件中保存了不止有公钥信息，还有私钥信息，通过函数`PKCS12_parse`可以从p12结构中提取有用的信息，因此进行了如下的处理：
+
+``` cpp
+PKCS12 *p12=NULL;
+p12=d2i_PKCS12_fp(fp,NULL);
+if(NULL == p12)
+{
+    printf("read p12 file error\n");
+    return -1;
+}
+//STACK_OF(X509) *tmp_ca = NULL;
+char pass[20]="";
+tmp_i=PKCS12_parse(p12,pass,NULL,&rootCert,NULL);
+if(tmp_i!=1)
+{
+    printf("[%d][%s]\n",tmp_i,ERR_reason_error_string(ERR_get_error()));
+    return -1;
+}
+```
+
+在上面的代码片段中，我们依然将将获取的信息提取到了rootCert中。
 
 ### 解析X509结构
+
+首先了解一下X509的结构：
+
+``` cpp
+typedef struct x509_cinf_st {
+    ASN1_INTEGER *version;      /* [ 0 ] default of v1 */
+    ASN1_INTEGER *serialNumber;
+    X509_ALGOR *signature;
+    X509_NAME *issuer;
+    X509_VAL *validity;
+    X509_NAME *subject;
+    X509_PUBKEY *key;
+    ASN1_BIT_STRING *issuerUID; /* [ 1 ] optional in v2 */
+    ASN1_BIT_STRING *subjectUID; /* [ 2 ] optional in v2 */
+    STACK_OF(X509_EXTENSION) *extensions; /* [ 3 ] optional in v3 */
+    ASN1_ENCODING enc;
+} X509_CINF;
+```
+
+这里很容易发现，提取还是很容易的。
 
 #### 获取version
 
 这里主要使用的函数为`long X509_get_version`
 
+``` cpp
+tmp_l = X509_get_version(rootCert);
+if(tmp_l<0){
+    ERRORMSG(errMsg,"获取version失败");
+    return -1;
+}
+else
+{
+    certInf->version = tmp_l;
+}
+```
+
 #### 获取序列号
+
+使用函数``
+
+``` cpp
+Serial = X509_get_serialNumber(rootCert);
+if(NULL == Serial)
+{
+    
+}
+else
+{
+    temp_c = certInf->serialNumber;
+    for(i = 0;i<Serial->length;i++)
+    {
+        snprintf(temp_c,sizeof(certInf->serialNumber)-2*i,"%02x",Serial->data[i]);
+        temp_c += 2;
+    }
+    //printf("serialNumber[%s]\n",certInf->serialNumber);
+}
+```
+
+#### 获取颁发者信息
+
+``` cpp
+issuer_name = X509_get_issuer_name(rootCert);
+memset(tmp_buf,0x00,sizeof(tmp_buf));
+tmp_i = 512;
+tmp_i = X509_NAME_get_text_by_NID(issuer_name,NID_commonName,tmp_buf,tmp_i);
+if(tmp_i<0)
+{
+    ERRORMSG(errMsg,"获取颁发者信息失败");
+    return -1;
+}
+else
+{
+    strncpy(certInf->issuerName,tmp_buf,sizeof(certInf->issuerName)-1);
+    //printf("[%s]\n",tmp_buf);
+}
+```
+
+#### 获取使用者信息
+
+``` cpp
+pSubName = X509_get_subject_name(rootCert);
+memset(tmp_buf,0x00,sizeof(tmp_buf));
+tmp_i = 512;
+tmp_i = X509_NAME_get_text_by_NID(pSubName,NID_countryName,tmp_buf,tmp_i);
+if(tmp_i<0)
+{
+    
+}
+else
+{
+    //printf("NID_countryName[%s]\n",tmp_buf);
+    strncpy(certInf->countryName,tmp_buf,sizeof(certInf->countryName)-1);
+}
+
+memset(tmp_buf,0x00,sizeof(tmp_buf));
+tmp_i = 512;
+tmp_i = X509_NAME_get_text_by_NID(pSubName,NID_organizationName,tmp_buf,tmp_i);
+if(tmp_i<0)
+{
+    
+}
+else
+{
+    //printf("NID_organizationName[%s]\n",tmp_buf);
+    strncpy(certInf->organizationName,tmp_buf,sizeof(certInf->organizationName)-1);
+}
+
+
+memset(tmp_buf,0x00,sizeof(tmp_buf));
+tmp_i = 512;
+tmp_i = X509_NAME_get_text_by_NID(pSubName,NID_organizationalUnitName,tmp_buf,tmp_i);
+if(tmp_i<0)
+{
+    
+}
+else
+{
+    //printf("NID_organizationalUnitName[%s]\n",tmp_buf);
+    strncpy(certInf->organizationalUnitName,tmp_buf,sizeof(certInf->organizationalUnitName)-1);
+}
+
+
+memset(tmp_buf,0x00,sizeof(tmp_buf));
+tmp_i = 512;
+tmp_i = X509_NAME_get_text_by_NID(pSubName,NID_commonName,tmp_buf,tmp_i);
+if(tmp_i<0)
+{
+    
+}
+else
+{
+    //printf("NID_commonName[%s]\n",tmp_buf);
+    strncpy(certInf->subName,tmp_buf,sizeof(certInf->subName)-1);
+}
+```
 
 #### 获取有效时间
 
+``` cpp
+//有效期
+start = X509_get_notBefore(rootCert);  
+end = X509_get_notAfter(rootCert);
+ttStart = ASN1_GetTimeT(start);
+ttEnd = ASN1_GetTimeT(end);
+timeinfo = localtime(&ttStart);
+strftime(certInf->effectDate,9,"%Y%m%d",timeinfo);
+timeinfo = localtime(&ttEnd);
+strftime(certInf->expireDate,9,"%Y%m%d",timeinfo);
+```
 
 #### 获取公钥
 
