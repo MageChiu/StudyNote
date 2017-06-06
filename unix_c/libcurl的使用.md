@@ -1,3 +1,17 @@
+
+<!-- TOC -->
+
+- [libcurl的api](#libcurl的api)
+    - [主要函数`curl_easy_setopt`](#主要函数curl_easy_setopt)
+    - [函数`curl_easy_getinfo`](#函数curl_easy_getinfo)
+    - [函数` curl_easy_perform`](#函数-curl_easy_perform)
+- [长连接和短连接](#长连接和短连接)
+- [多线程问题](#多线程问题)
+- [libcurl调试方法](#libcurl调试方法)
+- [使用libcurl是需要注意的地方](#使用libcurl是需要注意的地方)
+
+<!-- /TOC -->
+
 ## libcurl的api
 ``` C
 curl_easy_init() 
