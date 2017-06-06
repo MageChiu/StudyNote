@@ -42,7 +42,7 @@
 |表示法 | 描述 | 正则表达式样例|
 |:--:|:--|:--:|
 literal | 匹配文本字符串的字面值literal | test 
-`re1/|re2`    | 匹配正则表达式re1或者re2 | `test|result`
+`re1|re2`    | 匹配正则表达式re1或者re2 | `test|result`
 `.`          | 匹配任何字符（除了`\n`)  | `test.result`
 `^`          | 匹配字符串起始部分                    |`^Test`
 `$`          | 匹配字符串终止部分                    | `Test$`
