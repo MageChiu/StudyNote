@@ -608,3 +608,15 @@ void* pthread_handle_message(void* para)
 ```
 
 
+## 这里主要写一写函数的使用
+在终端中使用man epoll_wait可以看到如下用法：
+``` cpp
+#include <sys/epoll.h>
+int epoll_wait(int epfd, struct epoll_event *events,
+                      int maxevents, int timeout);
+int epoll_pwait(int epfd, struct epoll_event *events,
+                      int maxevents, int timeout,
+                      const sigset_t *sigmask);
+```
+epoll_wait()
+
