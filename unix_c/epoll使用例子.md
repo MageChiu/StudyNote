@@ -618,5 +618,9 @@ int epoll_pwait(int epfd, struct epoll_event *events,
                       int maxevents, int timeout,
                       const sigset_t *sigmask);
 ```
-epoll_wait()
+`epoll_wait()`函数主要是用于
+其中几个参数分别是：
+epfd:
+events:
+
 
