@@ -623,4 +623,31 @@ int epoll_pwait(int epfd, struct epoll_event *events,
 epfd:
 events:
 
+`epoll_pwait`相对于`epoll_wait`增加了：
+``` cpp
+sigset_t origmask;
+
+sigprocmask(SIG_SETMASK, &sigmask, &origmask);
+ready = epoll_wait(epfd, &events, maxevents, timeout);
+sigprocmask(SIG_SETMASK, &origmask, NULL);
+```
+
+其中`sigprocmask`函数是用于检测或者改变目前的信号屏蔽字
+
+``` cpp
+#include <signal.h>            
+int sigprocmask(int how, const sigset_t *set, sigset_t *oldset);       
+int sigsuspend(const sigset_t*sigmask);
+```
+
+参数的含义：
+how：用于指定信号修改的方式，可能选择有三种：
+SIG_BLOCK//将set所指向的信号集中包含的信号加到当前的信号掩码中。即信号掩码和set信号集进行或操作。
+SIG_UNBLOCK//将set所指向的信号集中包含的信号从当前的信号掩码中删除。几心号掩码和set进行与操作。
+SIG_SETMASK //将set的值设定为新的进程信号掩码。即set对信号掩码进行了赋值操作。
+set：为执行信号集的指针，在此是新设的信号集，如果进项读取现在的屏蔽值，可将其设置为NULL
+oldset：也是指向信号集的指针，这里是指向存放原来的信号集。可以用来检测信号掩码中存在什么信号。
+返回值说明：
+成功执行时，返回0，失败返回-1，errno被设定为EINVAL
+
 
