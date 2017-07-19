@@ -1,3 +1,12 @@
+
+<!-- TOC -->
+
+- [epoll例子](#epoll例子)
+- [epoll的例子](#epoll的例子)
+    - [这里主要写一写函数的使用](#这里主要写一写函数的使用)
+
+<!-- /TOC -->
+
 # epoll例子
 下午研究了一下epoll，参考了以下的博客综合写了一个例子。
 
@@ -649,5 +658,43 @@ set：为执行信号集的指针，在此是新设的信号集，如果进项�
 oldset：也是指向信号集的指针，这里是指向存放原来的信号集。可以用来检测信号掩码中存在什么信号。
 返回值说明：
 成功执行时，返回0，失败返回-1，errno被设定为EINVAL
+
+回过头继续看epoll_wait函数，该函数主要是等待事件的产生，类似select调用。参数：- - 1). epfd：由epoll_create生成的，epoll专用的文件描述符
+- 2). `events`：用于回传待处理的事件的数组
+- 3). maxevents：每次能处理的事件数
+- 4). timeout：等待I/O事件发生的超时事件，单位是milliseconds
+
+返回值：
+- 成功时返回已经准备好的描述符的数量
+- 0 当超时间结束的时候，没有文件描述符准备好
+- -1 error
+
+ERRORS：
+- EBADF：epfd不是一个有效的文件描述符
+- EFAULT：
+- EINTR： 
+- EINVAL： epfd不是一个epoll文件描述符，或者maxevents的值小于等于0
+
+
+
+epoll_wait的系统实现的调用栈
+```cpp
+epoll_wait
+    ep_poll
+        ep_events_transfer
+            ep_collect_ready_items
+            ep_send_events
+```
+简单的分析：
+- 1). ep_collect_ready_items可以看出，事件之前是挂在一个列表`ep->rdlist`上的，这个函数就是把指定数量（该数量就是epoll_wait的参数maxevents）的事件挂到另一个列表txlist，也就是没有取出来的事件仍然挂在`ep->rdlist`上，不会丢失，下一个epoll_wait再通知用户。
+- 2). `ep_send_events`执行的动作就是把列表txlist的内容放到缓冲区，然后复制到用户缓冲区
+
+maxevents是epoll_wait可以处理的连接事件的最大限度值，这个值一般要小于等于epoll_create的size，当然如果设置成比size大的话，也无所谓，size是epoll可以监听的最大fd的数量。maxevents的意义是防止epoll的API在填写我们传进去的指针events的时候，超过指针指向的内存的大小从而导致内存溢出。
+
+# 在面试中被问道问题
+
+## 如何确定对端客户端已经关闭链接
+首先回来以后百度了一些答案
+
 
 
