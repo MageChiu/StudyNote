@@ -2,7 +2,7 @@
 
 
 
-# ³£ÓÃµÄ×ÊÔ´
+# å¸¸ç”¨çš„èµ„æº
 
 ##
 `https://github.com/openresty/lua-nginx-module`
