@@ -1,16 +1,21 @@
 
 <!-- TOC -->
 
-- [libcurl的api](#libcurl的api)
-    - [主要函数`curl_easy_setopt`](#主要函数curl_easy_setopt)
-    - [函数`curl_easy_getinfo`](#函数curl_easy_getinfo)
-    - [函数` curl_easy_perform`](#函数-curl_easy_perform)
-- [长连接和短连接](#长连接和短连接)
-- [多线程问题](#多线程问题)
-- [libcurl调试方法](#libcurl调试方法)
-- [使用libcurl是需要注意的地方](#使用libcurl是需要注意的地方)
+- [`easy_curl`的使用](#easy_curl的使用)
+    - [libcurl的api](#libcurl的api)
+        - [主要函数`curl_easy_setopt`](#主要函数curl_easy_setopt)
+        - [函数`curl_easy_getinfo`](#函数curl_easy_getinfo)
+        - [函数` curl_easy_perform`](#函数-curl_easy_perform)
+    - [长连接和短连接](#长连接和短连接)
+    - [多线程问题](#多线程问题)
+    - [libcurl调试方法](#libcurl调试方法)
+    - [使用libcurl是需要注意的地方](#使用libcurl是需要注意的地方)
+- [`multi_curl`的使用](#multi_curl的使用)
+    - [`curl_multi_fdset`](#curl_multi_fdset)
 
 <!-- /TOC -->
+
+# `easy_curl`的使用
 
 ## libcurl的api
 ``` C
@@ -517,6 +522,42 @@ int thread_cleanup(void)
   return 1;
 }
 ```
+
+
+
+
+
+# `multi_curl`的使用
+
+这一部分主要是multi_curl的使用的简单介绍
+
+
+这里感觉可能是将select和curl进行了组合
+
+首先需要介绍几个常用的结构体
+查看常用函数
+
+
+## `curl_multi_fdset`
+函数
+``` cpp
+#include <curl/curl.h>
+CURLMcode curl_multi_fdset(CURLM *multi_handle,
+                          fd_set *read_fd_set,
+                          fd_set *write_fd_set,
+                          fd_set *exc_fd_set,
+                          int *max_fd);
+```
+- 参数：
+  - `CURLM *multi_handle`:
+  - `fd_set *read_fd_set`:
+  - `fd_set *write_fd_set`:
+  - `fd_set *exc_fd_set`:
+  - `int *max_fd`:
+- 返回值：
+  - `-1`:如果没有文件描述符被libcurl成功设置的话，会返回-1
+- 功能：
+  主要是
 
 
 
