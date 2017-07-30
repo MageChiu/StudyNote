@@ -1,13 +1,13 @@
 <!-- TOC -->
 
-- [Python ÓëC µÄÏà»¥µ÷ÓÃ](#python-Óëc-µÄÏà»¥µ÷ÓÃ)
-- [Cµ÷Python](#cµ÷python)
-- [Pythonµ÷C](#pythonµ÷c)
+- [Python ä¸ŽC çš„ç›¸äº’è°ƒç”¨](#python-ä¸Žc-çš„ç›¸äº’è°ƒç”¨)
+- [Cè°ƒPython](#cè°ƒpython)
+- [Pythonè°ƒC](#pythonè°ƒc)
 
 <!-- /TOC -->
-# Python ÓëC µÄÏà»¥µ÷ÓÃ
+# Python ä¸ŽC çš„ç›¸äº’è°ƒç”¨
 
-# Cµ÷Python
+# Cè°ƒPython
 
 
-# Pythonµ÷C
+# Pythonè°ƒC
