@@ -10,6 +10,9 @@ ____
     - [虚拟栈内元素的管理](#虚拟栈内元素的管理)
 - [编写提供给Lua使用的C库函数](#编写提供给lua使用的c库函数)
     - [第一个例子](#第一个例子)
+- [lua的小常识](#lua的小常识)
+    - [lua中的数据类型](#lua中的数据类型)
+    - [pairs和ipairs的区别](#pairs和ipairs的区别)
 
 <!-- /TOC -->
 ____
@@ -358,5 +361,63 @@ for k,v in pairs(t) do
 end
 ```
 
+# lua的小常识
 
+## lua中的数据类型
+
+常用数据类型
+
+数据类型|描述|举例
+|:---:|:---:|:---:|
+nil| 只有nil属于该类 | nil
+boolean|布尔类型| true和false
+number|双精度类型的实浮点数|
+string| 字符串数组 |
+function| 调用的函数|
+userdata| 任意存储在变量中的C数据结构，这些数据结构只能通过metatables来访问 |
+thread| 表示执行的一条线路，这个与操作系统中的线程概念年并不相同，它是用来支持共例程(corountine)的 |
+table| 关联数组(associative arrays)，数组的索引可以是数字或者字符串 |
+
+
+- function、userdata、thread、table
+- 对全局变量和table，对其赋值nil等同于将其删除
+    ``` lua
+    tabl1 = 
+    {
+        key1 = "nihao",
+        key2 = "test", 
+    }
+    tabl1.key1 = nil
+    ```
+    相当于删除了tabl1中的key1对应的值
+- false和nil都是假
+- 用`#`计算字符串长度，用`..`连接字符串
+- 匿名函数的用法：
+    ``` lua
+    function testFun(tab, fun)
+        for k,v in pairs( tab ) do
+            print( fun(k,v) )
+        end
+    end
+    testFun(tabl1, function ( key, val )
+        -- body
+        return key.."="..val
+    end
+    )
+    ```
+- 
+
+
+
+
+## pairs和ipairs的区别
+- ipairs是按照下标从1开始累加便利的，遇到key不是1的推出
+- pairs便利整个数组
+
+
+
+# 面向对象
+所有的高级语言都离不开面向对象
+
+在Lua中使用`:`实现面向对象方式的调用。
 
