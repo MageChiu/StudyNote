@@ -21,6 +21,7 @@ ____
 # C++11的新特性
 
 ## 智能指针
+shared_ptr
 
 
 
@@ -37,6 +38,33 @@ foo() = 3; //ok, foo() is an lvalue
 int bar();
 int a = bar(); // ok, bar() is an rvalue
 ```
+
+这里参考了别人的一个说法，左值和右值都是针对表达式而言的，左值是指表达式结束后依然存在的持久的对象，而右值是指表达式结束就不存在的临时对象。一个区分左值和右值的简单方法是，看能不能对表达式取地址。
+``` cpp
+int a = 10;
+int b = 20;
+int *pFlag = &a;
+vector<int> vctTemp;
+vctTemp.push_back(1);
+string str1 = "hello ";
+string str2 = "world";
+const int &m = 1;
+```
+其中，：
+- `a`:
+- `b`:
+- `a+b`
+- `++a`:
+- `a++`:
+- `pFlag`:
+- `*pFlag`:
+- `100`和`string("hello")`:
+- `str1+str2`
+
+
+右值引用之前，先看一下*左值引用*。左值引用，根据其修饰符不同，可以分为非常量左值引用和常量左值引用。
+
+
 
 ### move语义
 
