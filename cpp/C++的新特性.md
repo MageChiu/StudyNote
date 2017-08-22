@@ -65,6 +65,7 @@ const int &m = 1;
 右值引用之前，先看一下*左值引用*。左值引用，根据其修饰符不同，可以分为非常量左值引用和常量左值引用。
 
 
+右值引用根据其修饰符的不同，也可以分为非常量右值引用和常量右值引用。
 
 ### move语义
 
@@ -72,7 +73,8 @@ const int &m = 1;
 
 
 >  https://www.zhihu.com/question/22111546  
->  http://blog.csdn.net/booirror/article/details/45057689  
+>  http://blog.csdn.net/booirror/article/details/45057689    
+>  http://blog.csdn.net/yapian8/article/details/42341307   
 ____
 
 ## async
