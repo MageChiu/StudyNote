@@ -14,6 +14,8 @@ ____
     - [lambda函数](#lambda函数)
 - [C++14](#c14)
 - [C++17](#c17)
+    - [`fold expression`](#fold-expression)
+    - [`structured binding`](#structured-binding)
 
 <!-- /TOC -->
 ____
@@ -22,6 +24,11 @@ ____
 
 ## 智能指针
 shared_ptr
+
+> 注意：
+>1. 不使用相同的内置指针初始化多个智能指针
+>2. 
+>3. 
 
 
 
@@ -175,6 +182,9 @@ ____
 
 # C++17
 
+## `fold expression`
 
+
+## `structured binding`
 
 ____
