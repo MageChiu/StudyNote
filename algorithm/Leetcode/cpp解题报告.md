@@ -7,6 +7,7 @@
 - [412. Fizz Buzz](#412-fizz-buzz)
 - [461](#461)
 - [476 Number Complement](#476-number-complement)
+- [500. Keyboard Row](#500-keyboard-row)
 - [535. Encode and Decode TinyURL](#535-encode-and-decode-tinyurl)
 - [575 Distribute Candies](#575-distribute-candies)
 
@@ -51,6 +52,11 @@ Return:
 
 # 476 Number Complement
 
+# 500. Keyboard Row
+
+> file: ALG500_KeyboardRow.cpp
+
+
 # 535. Encode and Decode TinyURL
 
 > Note: This is a companion problem to the System Design problem: Design TinyURL.
@@ -91,3 +97,5 @@ Note:
 
 
 > file:ALG575_DistributeCandies.cpp
+
+
