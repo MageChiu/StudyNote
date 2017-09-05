@@ -14,12 +14,18 @@ ____
         - [extern关键字](#extern关键字)
     - [深拷贝浅拷贝](#深拷贝浅拷贝)
     - [多态](#多态)
+    - [四种类型转换](#四种类型转换)
+    - [友元函数](#友元函数)
 - [C++11的新特性](#c11的新特性)
     - [智能指针](#智能指针)
+        - [shared_ptr](#shared_ptr)
+        - [weak_ptr](#weak_ptr)
     - [右值引用以及移动语义](#右值引用以及移动语义)
         - [什么是右值](#什么是右值)
         - [右值使用的折叠规则](#右值使用的折叠规则)
         - [move语义](#move语义)
+            - [Rvalue和Lvalue Reference的重载规则](#rvalue和lvalue-reference的重载规则)
+            - [返回Rvalue Reference](#返回rvalue-reference)
     - [async](#async)
     - [多线程](#多线程)
     - [lambda函数](#lambda函数)
@@ -153,6 +159,8 @@ int func()
 
 C++的多态是C++最基本的一个性质之一。简而言之，多态分为静态多态和动态多态。
 
+## 四种类型转换
+
 ## 友元函数
 
 
@@ -232,13 +240,39 @@ const int &m = 1;
 
 ### move语义
 
+`std::move()` 声明在```<utility>```
 
-
+> 一般而言，C++标准库保证了，在一次move操作以后，对象出于有效但不确定的状态。也就是说，在执行
 
 >  https://www.zhihu.com/question/22111546  
 >  http://blog.csdn.net/booirror/article/details/45057689    
 >  http://blog.csdn.net/yapian8/article/details/42341307   
 ____
+#### Rvalue和Lvalue Reference的重载规则
+- 如果只实现 `void foo(X&);` 而没有实现 `void foo(X&&);`，行为如同C++98：`foo()`可因lvalue但不能因Rvalue被调用。
+- 如果实现`void foo(const X&);`而没有实现`void foo(X&&);`,
+- 如果实现了
+	``` cpp
+	void foo(X&);
+	void foo(X&&);
+	```
+	or
+	``` cpp
+	void foo(const)
+	```
+	就可以区分 “为Rvalue服务”和“为lvalue服务”。“为Rvalue服务”部分需要提供move语义。
+- 如果实现
+	``` cpp
+	void foo(X&&);
+	```
+	但是没有实现`void foo(X&)`和`void foo(const X&)`,foo()可因Rvalue被调用，但是如果尝试使用lvalue调用它的时候，会触发编译报错。
+
+也就是说，如果class没有提供move语义，只提供惯用的copy构造函数和copy assignment操作符，Rvalue reference可以调用他们，意味着在`std::move()`使用中，如果有提供move语义就调用move语义，否则使用copy语义。
+
+
+#### 返回Rvalue Reference
+
+
 
 ## async
 

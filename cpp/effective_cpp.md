@@ -18,7 +18,9 @@ _____
 
 # 09 绝不在构造和析构过程中调用virtual函数
 
-在base class构造期间，virtual函数不是virtual函数
+在base class构造期间，virtual函数不是virtual函数。更加根本的原因是，在derived class对象的base clase构造期间，对象类型是base class 而不是derived class。
+
+> 这里我猜想应该是vptr形成的时间造成的，应该是在构建derived class对象最后时候形成的，
 
 
 
@@ -30,10 +32,23 @@ _____
 
 
 ### 析构函数能不能为虚函数
+能，如果一个类需要为基类的时候，就需要采用一个虚析构函数
 
 ### 析构函数能不能为纯虚函数
+可以，但是必须在类外对函数进行实现。否在会在编译的时候报错，无法链接。
 
 ### 构造函数能不能为虚函数
 
+不能，会在编译期报错
+``` bash
+clvtest.cpp:27:18: error: constructors cannot be declared virtual [-fpermissive]
+     virtual Base()
+```
+C++ 在创建一个对象的时候，无非是在三个地方：
+1. 函数调用栈
+2. 堆（自由存储区）
+3. 静态存储区
+
+而C++在创建对象的时候，
 
 ### 构造函数能不能为纯虚函数
