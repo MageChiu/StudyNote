@@ -4,15 +4,27 @@
 
 <!-- TOC -->
 
+- [371. Sum of Two Integers](#371-sum-of-two-integers)
 - [412. Fizz Buzz](#412-fizz-buzz)
 - [461](#461)
 - [476 Number Complement](#476-number-complement)
 - [500. Keyboard Row](#500-keyboard-row)
 - [535. Encode and Decode TinyURL](#535-encode-and-decode-tinyurl)
+- [538. Convert BST to Greater Tree](#538-convert-bst-to-greater-tree)
 - [575 Distribute Candies](#575-distribute-candies)
 
 <!-- /TOC -->
 —————————
+
+
+# 371. Sum of Two Integers 
+
+Calculate the sum of two integers a and b, but you are not allowed to use the operator + and -.
+
+Example:
+Given a = 1 and b = 2, return 3.
+
+file ： ALG371_SumofTwoIntegers.cpp
 
 
 # 412. Fizz Buzz
@@ -68,7 +80,10 @@ Design the encode and decode methods for the TinyURL service. There is no restri
 
 file : ALG535_EncodeAndDecodeTinyURL.cpp
 
+# 538. Convert BST to Greater Tree
 
+
+file : ALG538_ConvertBST2GreaterTree.cpp
 
 # 575 Distribute Candies
 
@@ -97,5 +112,6 @@ Note:
 
 
 > file:ALG575_DistributeCandies.cpp
+
 
 
