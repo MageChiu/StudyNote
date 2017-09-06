@@ -15,6 +15,10 @@ ____
     - [深拷贝浅拷贝](#深拷贝浅拷贝)
     - [多态](#多态)
     - [四种类型转换](#四种类型转换)
+        - [static_cast:](#static_cast)
+        - [const_cast](#const_cast)
+        - [dynamic_cast](#dynamic_cast)
+        - [reinterpret_cast](#reinterpret_cast)
     - [友元函数](#友元函数)
 - [C++11的新特性](#c11的新特性)
     - [智能指针](#智能指针)
@@ -160,6 +164,51 @@ int func()
 C++的多态是C++最基本的一个性质之一。简而言之，多态分为静态多态和动态多态。
 
 ## 四种类型转换
+C++引入了4种类型转化操作符（cast operator）：static_cast，const_cast，dynamic_cast和reinterpret_cast，使用方法与C语言中略有不同：
+``` cpp
+ (type)expression;   //这是C语言的
+```
+然后引入C++的：
+``` cpp
+ static_cast<type>(expression);//这是C++的
+```
+然后分别介绍一下：
+
+### static_cast:
+static_cast：static_cast基本上拥有与C旧式转型相同的威力和意义，以及相同的限制。但是，该类型转换操作符不能移除常量性，因为有一个专门的操作符用来移除常量性。
+
+### const_cast
+const_cast：用来改变表达式中的常量性（constness）或者易变形（volatileness），只能用于此功能。
+使用方式如下：
+``` cpp
+const_cast<type_id> (expression)
+```
+其中type_id和expression的类型是一样的。
+1. 常亮纸质被转化成非常量指针，并且仍然指向原来的对象。
+2. 常亮引用被转换成非常量引用，并且仍然指向原来的对象；
+3. const_cast一般用于修改底指针，如const char* p的形式。
+
+### dynamic_cast
+dynamic_cast：将指向基类basic class object的pointer或者reference转型为指向派生类derived（或这sibling base）class object的pointer或者reference中，并且可以获知是否转型成功：如果转型失败，当转型对象是指针的时候会返回一个null指针；当转型对象是reference会抛出一个异常exception。dynamic_cast无法应用在缺乏虚函数的类型上，也不能改变类型的常量性。此外，dynamic_cast还有一个用途就是找出被对象占用的内存的起始点。
+
+
+
+### reinterpret_cast
+reinterpret_cast：这个操作符的转换结果几乎总是和编译器平台相关，所以不具有移植性。reinterpret_cast的最常用用途是转换“函数指针”类型，如下： 
+``` cpp
+typedef void(*FuncPtr)();
+int doSomething();
+int main()
+{    
+	FuncPtr funcPtrArray[10];    
+	funcPtrArray[0] = reinterpret_cast<FuncPtr>(&doSomething);    
+	return 0;
+}
+```
+通过reinterpret_cast强迫编译器了，并成功的将不同的类型的函数&doSomething转换为需要的类型。不过这个操作符进行的转换动作不具有移植性（C++不保证所有的函数指针都能以此方式重新呈现），某些情况下这样的转型可能会导致不正确的结果，所以这种操作不到万不得已不要使用。
+
+
+
 
 ## 友元函数
 
