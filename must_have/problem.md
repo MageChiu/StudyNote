@@ -16,3 +16,14 @@
 
 问题：
 1. 高qps下的readis如何工作
+
+
+
+
+
+
+# 如何截取中文字符串
+
+> http://blog.csdn.net/hairetz/article/details/4198191
+
+> http://bbs.csdn.net/topics/310067354
