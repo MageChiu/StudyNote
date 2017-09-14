@@ -18,6 +18,11 @@
 <!-- /TOC -->
 —————————
 
+# 50. Pow(x, n)
+Implement pow(x, n).
+
+file : ALG050_Pow.cpp
+
 
 # 371. Sum of Two Integers 
 
