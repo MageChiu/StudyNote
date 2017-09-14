@@ -48,11 +48,7 @@ public:
             {
                 maxL = dp[i];
             }
-        }
-        for(int i = 0; i<dp.size(); ++i)
-        {
-            cout << dp [ i] << endl;
-        }    
+        } 
         return maxL;
     }
 };

@@ -12,6 +12,8 @@
 - [535. Encode and Decode TinyURL](#535-encode-and-decode-tinyurl)
 - [538. Convert BST to Greater Tree](#538-convert-bst-to-greater-tree)
 - [575 Distribute Candies](#575-distribute-candies)
+- [673. Number of Longest Increasing Subsequence](#673-number-of-longest-increasing-subsequence)
+- [674. Longest Continuous Increasing Subsequence](#674-longest-continuous-increasing-subsequence)
 
 <!-- /TOC -->
 —————————
@@ -115,3 +117,13 @@ Note:
 
 
 
+# 673. Number of Longest Increasing Subsequence
+
+> file : ALG673_NumberOfLongestIncreasingSubsequence.cpp
+
+_________
+
+# 674. Longest Continuous Increasing Subsequence
+
+
+> file: ALG674_LongestContinuousIncreasingSubsequence.cpp
