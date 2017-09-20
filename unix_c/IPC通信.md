@@ -43,7 +43,7 @@ IPC类型|持续性|用于打开或者创建IPC的名字空间|IPC打开后的�
 |信号量|<semaphore.h> |sem_open\sem_close\sem_unlink  sem_init\sem_destroy |/ | sem_wait\sem_trywait\sem_post\sem_getvalue|
 |共享内存|<sys/mman.h> | shm_open/shm_unlink | ftruncate/fstat | mmap/munmap |
 
-
+Posix IPC名字必须符合已有的路径命名规则（必须最多由PATH_MAX个字节构成，包括结尾的空字节）
 
 
 
