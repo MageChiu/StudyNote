@@ -54,25 +54,16 @@ test2===>test2
 通过使用string库，lua可以很容易地操作字符串。string库中所有的字符索引从前往后是`1,2,...`，从后往前是`-1,-2,...`。string库中所有的function都不会直接操作字符串，而是返回一个结果：
 ``` lua
 s = "[abc]"
-
 string.len(s)        <==返回5
-
 string.rep("abc", 2) <==返回"abcabc"
-
 string.lower("ABC") <==返回"abc"
-
 string.upper("abc") <==返回"ABC"
-
 string.sub(s, 2)     <==返回"abc]"
-
 string.sub(s, -2)    <==返回"c]"
-
 string.sub(s, 2, -2) <==返回"abc"
-
 string.format(fmt, ...)返回一个类似printf的格式化字符串
-
 string.find(s, pattern, pos)
-
+```
 第1个参数：源字符串
 
 第2个参数：待搜索之模式串
@@ -82,54 +73,36 @@ string.find(s, pattern, pos)
 找到匹配返回：匹配串开始和结束的位置，否则返回nil
 
 简单的模式串
-
+``` lua
 s = "hello world"
-
 i, j = string.find(s, "hello")
-
 print(i, j) --> 1 5
-
 print(string.sub(s, i, j)) --> hello
-
 print(string.find(s, "world")) --> 7 11
-
 i, j = string.find(s, "l")
-
 print(i, j) --> 3 3
-
 print(string.find(s, "lll")) --> nil
+```
 
 格式化的模式串
-
+``` lua
 s = "Deadline is 30/05/1999, firm"
-
 date = "%d%d/%d%d/%d%d%d%d"
-
 print(string.sub(s, string.find(s, date))) --> 30/05/1999
-
+```
 下面的表列出了Lua支持的所有字符类：
 
-. 任意字符
-
-%s 空白符
-
-%p 标点字符
-
-%c 控制字符
-
-%d 数字
-
-%x 十六进制数字
-
-%z 代表0的字符
-
-%a 字母
-
-%l 小写字母
-
-%u 大写字母
-
-%w 字母和数字
+- . 任意字符
+- %s 空白符
+- %p 标点字符
+- %c 控制字符
+- %d 数字
+- %x 十六进制数字
+- %z 代表0的字符
+- %a 字母
+- %l 小写字母
+- %u 大写字母
+- %w 字母和数字
 
 上面字符类的大写形式表示小写所代表的集合的补集。例如，'%A'非字母的字符：
 
@@ -137,21 +110,17 @@ print(string.sub(s, string.find(s, date))) --> 30/05/1999
 
 ( ) . % + - * ? [ ^ $
 
-'%' 用作特殊字符的转义字符
-
-'%.' 匹配点；
-
-'%%' 匹配字符 '%'。
+- '%' 用作特殊字符的转义字符
+- '%.' 匹配点；
+- '%%' 匹配字符 '%'。
 
 转义字符 '%'不仅可以用来转义特殊字符，还可以用于所有的非字母的字符。当对一个字符有疑问的时候，为安全起见请使用转义字符转义他。
 
 用'[]'创建字符集
 
-'[%w_]' 匹配字母数字和下划线
-
-'[01]' 匹配二进制数字
-
-'[%[%]]'匹配一对方括号
+- '[%w_]' 匹配字母数字和下划线
+- '[01]' 匹配二进制数字
+- '[%[%]]'匹配一对方括号
 
 在'[]'中使用连字符'-'
 

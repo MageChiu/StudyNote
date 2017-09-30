@@ -50,3 +50,26 @@ for i in l_range(5):
 
 ## Python 协程
 协程的调用来自用户，Python在3.4中引入了协程的概念，但是这个还是以生成器对象为基础的，3.5则确定了协程的语法。下面简单介绍asyncio的用法。
+
+这里套用上面生成器的代码，只是略做改动：
+``` python
+def jumping_range(up_to):
+    index = 0
+    while index < up_to:
+        jump = yield index
+        if jump is None:
+            jump = 1
+        index += jump
+
+
+iterator = jumping_range(20)
+for i in range(3):
+    print(next(iterator))
+    print(iterator.send(2))
+```
+这里可以将`jump = yield index`看做是:
+``` python
+yield index
+jump = yield
+```
+但是这么拆分会导致各种问题，但是我是这么理解的。测试可以发现yield会返回，并等待下一次调用，与生成器不同的是，yield会在函数内返回send传入的值。
