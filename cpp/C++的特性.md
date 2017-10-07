@@ -60,12 +60,10 @@ public:
     Base()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "Base" << endl;
     }
     ~Base()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "~Base" << endl;
     }
     Base& operator = (const Base& other)
     {
@@ -84,7 +82,6 @@ public:
     Base1()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "Base1" << endl;
     }
     Base1(const Base1& other)
     {
@@ -98,7 +95,6 @@ public:
     ~Base1()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "~Base1" << endl;
     }
 };
 
@@ -108,7 +104,6 @@ public:
     Base2()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "Base2" << endl;
     }
     Base2(const Base2& other)
     {
@@ -122,7 +117,6 @@ public:
     ~Base2()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "~Base2" << endl;
     }
 };
 
@@ -139,7 +133,6 @@ public:
     ~Derived()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "~Derived" << endl;
     }
 private:
     Base2 b2;
@@ -194,12 +187,10 @@ public:
     Base()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "Base" << endl;
     }
     ~Base()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "~Base" << endl;
     }
     Base& operator = (const Base& other)
     {
@@ -218,7 +209,6 @@ public:
     Base1()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "Base1" << endl;
     }
     Base1(const Base1& other)
     {
@@ -232,7 +222,6 @@ public:
     ~Base1()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "~Base1" << endl;
     }
 };
 
@@ -242,7 +231,6 @@ public:
     Base2()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "Base2" << endl;
     }
     Base2(const Base2& other)
     {
@@ -256,7 +244,6 @@ public:
     ~Base2()
     {
         cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
-        //cout << "~Base2" << endl;
     }
 };
 
@@ -266,7 +253,6 @@ public:
     Base3()
     {
         cout << "functionName: " << __FUNCTION__ << " | lineNo:" << __LINE__ << endl;
-        //cout << "Base2" << endl;
     }
     Base3(const Base3& other)
     {
@@ -280,7 +266,6 @@ public:
     ~Base3()
     {
         cout << "functionName: " << __FUNCTION__ << " | lineNo:" << __LINE__ << endl;
-        //cout << "~Base2" << endl;
     }
 };
 
