@@ -179,7 +179,7 @@ functionName: Base1::~Base1 | lineNo:56
 functionName: Base::~Base | lineNo:23
 ```
 
-![上面例子的结果](../res/cpp/cpp_identity/cpp特性_析构和构造01.png)
+![上面例子的结果](../res/img/cpp/cpp_identity/cpp特性_析构和构造01.png)
 
 第二个列子与第一个例子相比，仅仅是增加了一个新的派生类：Base3
 code:
@@ -316,7 +316,7 @@ int main()
 }
 ```
 
-![第二个例子的结果](../res/cpp/cpp_identity/cpp特性_析构和构造01.png)
+![第二个例子的结果](../res/img/cpp/cpp_identity/cpp特性_析构和构造01.png)
 
 因此我们可以总结出来，派生和析构的规则如下：
 1. 总体规则是先构造的后析构，后构造的先析构
