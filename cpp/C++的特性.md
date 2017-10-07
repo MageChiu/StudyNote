@@ -5,6 +5,7 @@ ____
 <!-- TOC -->
 
 - [C++的特性](#c的特性)
+    - [构造和析构](#构造和析构)
     - [常用的关键字](#常用的关键字)
         - [static](#static)
             - [首先是熟悉的面向过程：](#首先是熟悉的面向过程)
@@ -43,6 +44,288 @@ ____
 
 
 # C++的特性
+
+## 构造和析构
+构造和析构是C++的入门姿势，这里简单的复习一下：
+code：
+``` cpp
+#include <iostream>
+#include <stdlib.h>
+#include <cstdlib>
+using namespace std;
+
+class Base
+{
+public:
+    Base()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "Base" << endl;
+    }
+    ~Base()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Base" << endl;
+    }
+    Base& operator = (const Base& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        return *this;
+    }
+    Base(const Base& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+    }
+};
+
+class Base1
+{
+public:
+    Base1()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "Base1" << endl;
+    }
+    Base1(const Base1& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+    }
+    Base1& operator=(const Base1& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        return *this;
+    }
+    ~Base1()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Base1" << endl;
+    }
+};
+
+class Base2
+{
+public:
+    Base2()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "Base2" << endl;
+    }
+    Base2(const Base2& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+    }
+    Base2& operator=(const Base2& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        return *this;
+    }
+    ~Base2()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Base2" << endl;
+    }
+};
+
+class Derived :public Base, public Base1, public Base2
+{
+public:
+    Derived()
+        :b1(Base1())
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "Derived" << endl;
+        b2 = Base2();
+    }
+    ~Derived()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Derived" << endl;
+    }
+private:
+    Base2 b2;
+    Base1 b1;
+};
+
+
+int main()
+{
+    cout << "test 2" << endl;
+    {
+        Derived dobj;
+        cout << "lineNo: " << __LINE__ << endl;
+    }
+    system("pause");
+    return 0;
+}
+```
+得到结果：
+``` shell
+test 2
+functionName: Base::Base | lineNo:18
+functionName: Base1::Base1 | lineNo:42
+functionName: Base2::Base2 | lineNo:66
+functionName: Base2::Base2 | lineNo:66
+functionName: Base1::Base1 | lineNo:42
+functionName: Derived::Derived | lineNo:92
+functionName: Base2::Base2 | lineNo:66
+functionName: Base2::operator = | lineNo:75
+functionName: Base2::~Base2 | lineNo:80
+lineNo: 117
+functionName: Derived::~Derived | lineNo:98
+functionName: Base1::~Base1 | lineNo:56
+functionName: Base2::~Base2 | lineNo:80
+functionName: Base2::~Base2 | lineNo:80
+functionName: Base1::~Base1 | lineNo:56
+functionName: Base::~Base | lineNo:23
+```
+
+![上面例子的结果](../res/cpp/cpp_identity/cpp特性_析构和构造01.png)
+
+第二个列子与第一个例子相比，仅仅是增加了一个新的派生类：Base3
+code:
+``` cpp
+#include <iostream>
+#include <stdlib.h>
+#include <cstdlib>
+using namespace std;
+class Base
+{
+public:
+    Base()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "Base" << endl;
+    }
+    ~Base()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Base" << endl;
+    }
+    Base& operator = (const Base& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        return *this;
+    }
+    Base(const Base& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+    }
+};
+
+class Base1
+{
+public:
+    Base1()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "Base1" << endl;
+    }
+    Base1(const Base1& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+    }
+    Base1& operator=(const Base1& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        return *this;
+    }
+    ~Base1()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Base1" << endl;
+    }
+};
+
+class Base2
+{
+public:
+    Base2()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "Base2" << endl;
+    }
+    Base2(const Base2& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+    }
+    Base2& operator=(const Base2& other)
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        return *this;
+    }
+    ~Base2()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Base2" << endl;
+    }
+};
+
+class Base3:public Base
+{
+public:
+    Base3()
+    {
+        cout << "functionName: " << __FUNCTION__ << " | lineNo:" << __LINE__ << endl;
+        //cout << "Base2" << endl;
+    }
+    Base3(const Base3& other)
+    {
+        cout << "functionName: " << __FUNCTION__ << " | lineNo:" << __LINE__ << endl;
+    }
+    Base3& operator=(const Base3& other)
+    {
+        cout << "functionName: " << __FUNCTION__ << " | lineNo:" << __LINE__ << endl;
+        return *this;
+    }
+    ~Base3()
+    {
+        cout << "functionName: " << __FUNCTION__ << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Base2" << endl;
+    }
+};
+
+class Derived :public Base, public Base1, public Base2, public Base3
+{
+public:
+    Derived()
+        :b1(Base1())
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "Derived" << endl;
+        b2 = Base2();
+    }
+    ~Derived()
+    {
+        cout << "functionName: " << __FUNCTION__  << " | lineNo:" << __LINE__ << endl;
+        //cout << "~Derived" << endl;
+    }
+private:
+    Base2 b2;
+    Base1 b1;
+};
+
+int main()
+{
+    cout << "test 2" << endl;
+    {
+        Derived dobj;
+        cout << "lineNo: " << __LINE__ << endl;
+    }
+    system("pause");
+    return 0;
+}
+```
+
+![第二个例子的结果](../res/cpp/cpp_identity/cpp特性_析构和构造01.png)
+
+因此我们可以总结出来，派生和析构的规则如下：
+1. 总体规则是先构造的后析构，后构造的先析构
+2. 子类对应的父类先于子类构造
+3. 基类构造顺序由集成的列表决定
+4. 成员变量的构造先于本类构造函数调用
+5. 成员变量的构造函数调用顺序，依照其申明的顺序，而不是出现在成员初始化表中的顺序
+
+
 ## 常用的关键字
 
 本篇文章是对C++中常见关键字的含义进行了详细的分析介绍，需要的朋友参考下，先笼统的介绍下，后面会详细介绍：
