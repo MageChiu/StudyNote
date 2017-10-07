@@ -159,25 +159,27 @@ int main()
 }
 ```
 得到结果：
-``` shell
-test 2
-functionName: Base::Base | lineNo:18
-functionName: Base1::Base1 | lineNo:42
-functionName: Base2::Base2 | lineNo:66
-functionName: Base2::Base2 | lineNo:66
-functionName: Base1::Base1 | lineNo:42
-functionName: Derived::Derived | lineNo:92
-functionName: Base2::Base2 | lineNo:66
-functionName: Base2::operator = | lineNo:75
-functionName: Base2::~Base2 | lineNo:80
-lineNo: 117
-functionName: Derived::~Derived | lineNo:98
-functionName: Base1::~Base1 | lineNo:56
-functionName: Base2::~Base2 | lineNo:80
-functionName: Base2::~Base2 | lineNo:80
-functionName: Base1::~Base1 | lineNo:56
-functionName: Base::~Base | lineNo:23
-```
+
+[^_^]: 
+    ``` shell
+    test 2
+    functionName: Base::Base | lineNo:18
+    functionName: Base1::Base1 | lineNo:42
+    functionName: Base2::Base2 | lineNo:66
+    functionName: Base2::Base2 | lineNo:66
+    functionName: Base1::Base1 | lineNo:42
+    functionName: Derived::Derived | lineNo:92
+    functionName: Base2::Base2 | lineNo:66
+    functionName: Base2::operator = | lineNo:75
+    functionName: Base2::~Base2 | lineNo:80
+    lineNo: 117
+    functionName: Derived::~Derived | lineNo:98
+    functionName: Base1::~Base1 | lineNo:56
+    functionName: Base2::~Base2 | lineNo:80
+    functionName: Base2::~Base2 | lineNo:80
+    functionName: Base1::~Base1 | lineNo:56
+    functionName: Base::~Base | lineNo:23
+    ```
 
 ![上面例子的结果](../res/img/cpp/cpp_identity/cpp特性_析构和构造01.png)
 
