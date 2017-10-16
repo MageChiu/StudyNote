@@ -8,22 +8,19 @@ git clone https://github.com/grpc/grpc.git
 
 ____
 
+<!-- TOC -->
 
+- [1. 框架](#1-%E6%A1%86%E6%9E%B6)
+
+<!-- /TOC -->
 ____
 
 
 
-# 框架
+# 1. 框架
 
-```flow
-st=>start: Start
-e=>end: End
-```
+gRPC的特征：
+- 基于 HTTP/2， 继而 提供了连接多路复用、Body 和 Header 压缩等机制。可以节省带宽、降低TCP链接次数、节省CPU使用和延长电池寿命等。
+- 支持主流开发语言（C, C++, Python, PHP, Ruby, NodeJS, C#, Objective-C、Golang、Java）
+- IDL (Interface Definition Language) 层使用了 Protocol Buffers, 非常适合团队的接口设计
 
-```mermaid
-graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
-```
