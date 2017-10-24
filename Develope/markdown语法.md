@@ -47,7 +47,7 @@ $$	x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$
 ### 流程图
 ```flow
 st=>start: Start
-e=>end
+e=>end: End
 op=>operation: My Operation
 cond=>condition: Yes or No?
 
