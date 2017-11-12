@@ -7,6 +7,7 @@
         - [1.2 函数](#12-函数)
             - [1.2.1 冒号(:)和点(.)的区别](#121-冒号和点的区别)
     - [2. 字符串操作](#2-字符串操作)
+    - [pair和ipair的区别](#pair和ipair的区别)
 
 <!-- /TOC -->
 
@@ -153,67 +154,54 @@ print(string.sub(s, string.find(s, date))) --> 30/05/1999
 $ 匹配字符串结尾
 
 捕获：用()将要捕获的部分包围起来
-
+``` lua
 pair = "name = Anna"
-
 firstidx, lastidx, key, value = string.find(pair, "(%a+)%s*=%s*(%a+)")
-
 print(key, value) <== name Anna
-
+```
 拷贝捕获(%1-%9)
 
+``` lua
 s = "abc \"it\'s a cat\""
-
 _,_,_,q = string.find(s, "([\"'])(.-)%1"))
-
 print(q) <== it's a cat 如果%d代表第几个捕获的拷贝。
-
 string.gsub(s, pattern, reps)
-
-第1个参数：源字符串
-
-第2个参数：待替换之模式串
-
-第3个参数：替换为reps
+```
+- 第1个参数：源字符串
+- 第2个参数：待替换之模式串
+- 第3个参数：替换为reps
 
 将s中所有符合pattern的字串替换为reps，返回结果串+匹配数
-
+``` lua
 print(string.gsub("hello, world", "o", "a"))       <== hella, warld        2
-
 gsub也可以用拷贝捕获技巧
-
 print(string.gsub("hello, world", "(o)", "%1-%1")) <== hello-o, wo-orld    2
-
 print(string.gsub("hello Lua", "(.)(.)", "%2%1")) <== ehll ouLa           4
-
 function trim (s) return (string.gsub(s, "^%s*(.-)%s*$", "%1")) end <== 注意匹配数用括号丢弃
-
 string.gsub(s, pattern, func)
-
+``` 
 第3个参数：自定义函数，对找到的匹配操作，并传出替换值
-
+``` lua
 s, n = string.gsub("hello world", "l+", function(s) return "xxx" end)
-
 print(s, n) <== hexxxo worxxxd 2
-
 string.gfind(s, pattern)
-
+``` 
 返回一个迭代器，迭代器每执行一次，返回下一个匹配串；
-
+``` lua
 iter = string.gfind("a=b c=d", "[^%s+]=[^%s+]")
-
 print(iter()) <== a=b
-
 print(iter()) <== c=d
-
+```
 通常用于泛性for循环,下面的例子结果同上
-
+``` lua
 for s in string.gfind("a=b c=d", "[^%s+]=[^%s+]") do
-
 print(s)
-
 end
 ```
+
+
+## pair和ipair的区别
+区别其实很简单，但是是一个很基本的区别。主要是在做基本循环的时候的会遇到
 
 
 
