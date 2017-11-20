@@ -4,6 +4,7 @@
 
 <!-- TOC -->
 
+- [50. Pow(x, n)](#50-powx-n)
 - [371. Sum of Two Integers](#371-sum-of-two-integers)
 - [412. Fizz Buzz](#412-fizz-buzz)
 - [461](#461)
@@ -14,6 +15,8 @@
 - [575 Distribute Candies](#575-distribute-candies)
 - [673. Number of Longest Increasing Subsequence](#673-number-of-longest-increasing-subsequence)
 - [674. Longest Continuous Increasing Subsequence](#674-longest-continuous-increasing-subsequence)
+- [728. Self Dividing Numbers](#728-self-dividing-numbers)
+- [724. Find Pivot Index](#724-find-pivot-index)
 
 <!-- /TOC -->
 —————————
@@ -132,3 +135,15 @@ _________
 
 
 > file: ALG674_LongestContinuousIncreasingSubsequence.cpp
+
+
+# 728. Self Dividing Numbers
+
+
+> file: ALG728_SelfDividingNumbers.cpp
+
+
+# 724. Find Pivot Index
+
+
+> file :ALG724_FindPivotIndex.cpp
