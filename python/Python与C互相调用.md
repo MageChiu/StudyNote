@@ -91,7 +91,7 @@ PyMODINIT_FUNC  PyInit_chiuLib(void)
 function | usage
 :---: | :---:
 int PyArg_ParseTuple(PyObject *args, const char *format, ...)| 分析函数的传入参数，成功返回true，失败返回false，并抛出异常
-int PyArg_VaParse(PyObject *args, const char *format, va_list vargs)| 
+int PyArg_VaParse(PyObject *args, const char *format, va_list vargs) |  
 
 
 
