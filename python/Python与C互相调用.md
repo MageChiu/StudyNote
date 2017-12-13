@@ -1,18 +1,19 @@
 <!-- TOC -->
 
 - [Python 与C 的相互调用](#python-%E4%B8%8Ec-%E7%9A%84%E7%9B%B8%E4%BA%92%E8%B0%83%E7%94%A8)
-- [C调Python](#c%E8%B0%83python)
 - [Python调C](#python%E8%B0%83c)
     - [获取参数](#%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0)
         - [API Function](#api-function)
 - [参考资料](#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99)
     - [python3](#python3)
     - [python2](#python2)
+- [C调Python](#c%E8%B0%83python)
+    - [C语言调用Python3函数](#c%E8%AF%AD%E8%A8%80%E8%B0%83%E7%94%A8python3%E5%87%BD%E6%95%B0)
 
 <!-- /TOC -->
 # Python 与C 的相互调用
 
-# C调Python
+
 
 
 # Python调C
@@ -145,3 +146,9 @@ PyMODINIT_FUNC initpyTestLib(void)
 这里
 
 
+# C调Python
+如同上面的python能够调用c的函数，c也可以调用python的函数，这里依然是先以python3为例。
+
+## C语言调用Python3函数
+
+这里
