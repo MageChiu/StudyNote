@@ -31,6 +31,10 @@
 
 
 using namespace std;
+#define DEBUG_INT(val)  \
+do{ \
+    printf("[%s][%s][%d][%s][%d]\n",__FILE__, __FUNCTION__, __LINE__, #val, val);   \
+}while(0)
 
 /**
  * Definition for a binary tree node.
@@ -64,20 +68,54 @@ public:
         {
             return 0;
         }
+        int min_val, max_val, ret;
+        ret =  _getMinimumDifference(root,min_val, max_val);
+        return ret;
     }
-    int _getMinimumDifference(TreeNode* root, int& type, int& val)
+    int _getMinimumDifference(TreeNode* root, int& min_val, int& max_val)
     {
         if(root == NULL)
         {
-            type = -1;
-            return 0;
+            return -1;
         }
-        int l_max, r_min, l_val, r_val;
-        int lt = 1;
-        int rt = 2;
-        l_val = _getMinimumDifference(root->left, lt, l_max);
-        r_val = _getMinimumDifference(root->right, rt, r_min);
-        
+        int l_min, l_max, r_min, r_max, l_val = -1, r_val = -1;
+        int ret = -1;
+        if(NULL != root->left)
+        {
+            l_val = _getMinimumDifference(root->left, l_min, l_max);  
+            ret = root->val - l_max;
+            if(l_val != -1)
+            {
+                ret = min(l_val, ret);
+            }
+            min_val = l_min;      
+        }
+        else
+        {
+            min_val = root->val;
+        }
+        if(NULL != root->right)
+        {
+            r_val = _getMinimumDifference(root->right, r_min, r_max);
+            if(ret != -1)
+            {
+                ret = min(ret, r_min - root->val);
+            }
+            else
+            {
+                ret = r_min - root->val;
+            }
+            if(r_val != -1)
+            {
+                ret = min(ret , r_val);            
+            }
+            max_val = r_max;
+        }
+        else
+        {
+            max_val = root->val;
+        } 
+        return ret;  
     }
 };
 
@@ -97,7 +135,6 @@ TreeNode *creat_tree(vector<string> indata)
     cout << indata.size() << endl;
     while(i< indata.size())
     {
-        cout << i << endl;
         tmpPtr = tq.front();
         tq.pop();
         if(tmpPtr == NULL)
@@ -136,18 +173,34 @@ TreeNode *creat_tree(vector<string> indata)
     }
     return root;
 }
-
+int print_tree(TreeNode* root)
+{
+    if(root == NULL)
+    {
+        return -1;
+    }
+    print_tree(root->left);
+    cout << root->val << endl;
+    print_tree(root->right);
+    return 0;
+}
 int main()
 {
-    TreeNode* test_root = new TreeNode(1);
-    test_root->left = new TreeNode(2);
-    test_root->left->left = new TreeNode(4);
-    test_root->left->right = new TreeNode(5);
+    TreeNode* test_root = NULL;
+    test_root = new TreeNode(1);
     test_root->right = new TreeNode(3);
-    vector<string> test_str = { "4","-7","-3","null","null","-9","-3","9","-7","-4","null","6","null","-6","-6","null","null","0","6","5","null","9","null","null","-1","-4","null","null","null","-2" };
-    test_root  = creat_tree(test_str);
+    test_root->right->left = new TreeNode(2);
+    // test_root->left = new TreeNode(2);
+    // test_root->left->left = new TreeNode(4);
+    // test_root->left->right = new TreeNode(5);
+    
+
+    //vector<string> test_str = { "4","-7","-3","null","null","-9","-3","9","-7","-4","null","6","null","-6","-6","null","null","0","6","5","null","9","null","null","-1","-4","null","null","null","-2" };
+    vector<string> test_str = {"1","null","3","2"};
+    //test_root  = creat_tree(test_str);
+    print_tree(test_root);
     Solution so;
-    cout << so.diameterOfBinaryTree(test_root) << endl;
+    cout << so.getMinimumDifference(test_root) << endl;
     return 0;
 }
 
