@@ -10,13 +10,16 @@
 - [461](#461)
 - [476 Number Complement](#476-number-complement)
 - [500. Keyboard Row](#500-keyboard-row)
+- [530. Minimum Absolute Difference in BST](#530-minimum-absolute-difference-in-bst)
 - [535. Encode and Decode TinyURL](#535-encode-and-decode-tinyurl)
 - [538. Convert BST to Greater Tree](#538-convert-bst-to-greater-tree)
+- [543. Diameter of Binary Tree](#543-diameter-of-binary-tree)
 - [575 Distribute Candies](#575-distribute-candies)
 - [673. Number of Longest Increasing Subsequence](#673-number-of-longest-increasing-subsequence)
 - [674. Longest Continuous Increasing Subsequence](#674-longest-continuous-increasing-subsequence)
 - [728. Self Dividing Numbers](#728-self-dividing-numbers)
 - [724. Find Pivot Index](#724-find-pivot-index)
+- [733. Flood Fill](#733-flood-fill)
 
 <!-- /TOC -->
 —————————
@@ -78,6 +81,28 @@ Return:
 
 > file: ALG500_KeyboardRow.cpp
 
+# 530. Minimum Absolute Difference in BST
+
+Given a binary search tree with non-negative values, find the minimum absolute difference between values of any two nodes.
+
+Example:
+``` 
+Input:
+
+   1
+    \
+     3
+    /
+   2
+
+Output:
+1
+``` 
+Explanation:
+The minimum absolute difference is 1, which is the difference between 2 and 1 (or between 2 and 3).
+Note: There are at least two nodes in this BST.
+
+> file: ALG530_MinimumAbsoluteDifferenceBST.cpp
 
 # 535. Encode and Decode TinyURL
 
@@ -94,6 +119,25 @@ file : ALG535_EncodeAndDecodeTinyURL.cpp
 
 
 file : ALG538_ConvertBST2GreaterTree.cpp
+
+
+# 543. Diameter of Binary Tree
+Given a binary tree, you need to compute the length of the diameter of the tree. The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+
+Example:
+```
+Given a binary tree 
+          1
+         / \
+        2   3
+       / \     
+      4   5    
+Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
+```
+
+
+
+> file: ALG543_DiameterofBinaryTree.cpp
 
 # 575 Distribute Candies
 
@@ -147,3 +191,8 @@ _________
 
 
 > file :ALG724_FindPivotIndex.cpp
+
+
+
+# 733. Flood Fill
+> file: ALG733_Flood_Fill.cpp
