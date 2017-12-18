@@ -1,0 +1,28 @@
+CC = gcc
+XX = g++
+
+INC = -I./
+CFLAGS = -Wall -O0 -g
+TARGET = 3desTest
+LIBS = -lpthread -lssl -lcrypto
+
+
+%.o: %.c
+	$(CC) $(INC) $(CFLAGS) -c $< -o $@
+%.o: %.cpp
+	$(XX) $(INC) $(CFLAGS) -c $< -o $@
+
+PUBOBJ = mychiu.o
+SOURCES = $(wildcard ALG*.c ALG*.cpp)
+OBJS = $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SOURCES)))
+TARGETS = $(patsubst %.o,%,$(OBJ))
+
+$(TARGET) : $(OBJS)
+	$(XX) $^ $(LIBS) -g -o $(TARGET)
+	rm -rf *.o
+
+clean:
+	rm -rf *.o $(TARGET)
+
+
+
