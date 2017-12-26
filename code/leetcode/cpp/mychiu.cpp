@@ -22,7 +22,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 
 int ChiuTime::print_time()
 {
@@ -32,7 +32,17 @@ int ChiuTime::print_time()
     return 0;
 }
 
-
+static int print_tree(TreeNode* root)
+{
+    if(root == NULL)
+    {
+        return -1;
+    }
+    print_tree(root->left);
+    std::cout << root->val << std::endl;
+    print_tree(root->right);
+    return 0;
+}
 
 TreeNode* ChiuTool::creat_tree(std::vector<std::string> indata)
 {
@@ -63,6 +73,7 @@ TreeNode* ChiuTool::creat_tree(std::vector<std::string> indata)
         }
         else
         {
+            ss.clear();
             ss << indata[i];
             ss >> number;
             tmpPtr->left = new TreeNode(number);  
@@ -79,6 +90,7 @@ TreeNode* ChiuTool::creat_tree(std::vector<std::string> indata)
         }
         else
         {
+            ss.clear();
             ss << indata[i];
             ss >> number;
             tmpPtr->right = new TreeNode(number);  
@@ -91,4 +103,15 @@ TreeNode* ChiuTool::creat_tree(std::vector<std::string> indata)
 }
 
 
-
+int _utest()
+{
+    std::vector<std::string> test_str = {"1","null","3","2"};
+    ChiuTool ct;
+    TreeNode* test_root = ct.creat_tree(test_str);
+    print_tree(test_root);
+    return 0;
+}
+int main()
+{
+    _utest();
+}

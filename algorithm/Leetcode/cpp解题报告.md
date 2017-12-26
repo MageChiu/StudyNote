@@ -14,9 +14,11 @@
 - [535. Encode and Decode TinyURL](#535-encode-and-decode-tinyurl)
 - [538. Convert BST to Greater Tree](#538-convert-bst-to-greater-tree)
 - [543. Diameter of Binary Tree](#543-diameter-of-binary-tree)
+- [557. Reverse Words in a String III](#557-reverse-words-in-a-string-iii)
 - [575 Distribute Candies](#575-distribute-candies)
 - [673. Number of Longest Increasing Subsequence](#673-number-of-longest-increasing-subsequence)
 - [674. Longest Continuous Increasing Subsequence](#674-longest-continuous-increasing-subsequence)
+- [697. Degree of an Array](#697-degree-of-an-array)
 - [728. Self Dividing Numbers](#728-self-dividing-numbers)
 - [724. Find Pivot Index](#724-find-pivot-index)
 - [733. Flood Fill](#733-flood-fill)
@@ -139,6 +141,19 @@ Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
 
 > file: ALG543_DiameterofBinaryTree.cpp
 
+
+# 557. Reverse Words in a String III
+Given a string, you need to reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
+
+Example 1:
+```
+Input: "Let's take LeetCode contest"
+Output: "s'teL ekat edoCteeL tsetnoc"
+```
+Note: In the string, each word is separated by single space and there will not be any extra space in the string.
+
+> file: ALG557_ReverseWordsinStringIII.cpp
+
 # 575 Distribute Candies
 
 Given an integer array with even length, where different numbers in this array represent different kinds of candies. Each number means one candy of the corresponding kind. You need to distribute these candies equally in number to brother and sister. Return the maximum number of kinds of candies the sister could gain.
@@ -179,6 +194,31 @@ _________
 
 
 > file: ALG674_LongestContinuousIncreasingSubsequence.cpp
+
+# 697. Degree of an Array
+Given a non-empty array of non-negative integers nums, the degree of this array is defined as the maximum frequency of any one of its elements.
+
+Your task is to find the smallest possible length of a (contiguous) subarray of nums, that has the same degree as nums.
+
+Example 1:
+```
+Input: [1, 2, 2, 3, 1]
+Output: 2
+
+Explanation: 
+The input array has a degree of 2 because both elements 1 and 2 appear twice.
+Of the subarrays that have the same degree:
+[1, 2, 2, 3, 1], [1, 2, 2, 3], [2, 2, 3, 1], [1, 2, 2], [2, 2, 3], [2, 2]
+The shortest length is 2. So return 2.
+Example 2:
+Input: [1,2,2,3,1,4,2]
+Output: 6
+Note:
+
+nums.length will be between 1 and 50,000.
+nums[i] will be an integer between 0 and 49,999.
+```
+> file: ALG697_DegreeofArray.cpp
 
 
 # 728. Self Dividing Numbers
