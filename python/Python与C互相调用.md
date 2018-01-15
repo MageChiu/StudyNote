@@ -1,14 +1,14 @@
 <!-- TOC -->
 
-- [Python 与C 的相互调用](#python-%E4%B8%8Ec-%E7%9A%84%E7%9B%B8%E4%BA%92%E8%B0%83%E7%94%A8)
-- [Python调C](#python%E8%B0%83c)
-    - [获取参数](#%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0)
+- [Python 与C 的相互调用](#python-与c-的相互调用)
+- [Python调C](#python调c)
+    - [获取参数](#获取参数)
         - [API Function](#api-function)
-- [参考资料](#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99)
+- [参考资料](#参考资料)
     - [python3](#python3)
     - [python2](#python2)
-- [C调Python](#c%E8%B0%83python)
-    - [C语言调用Python3函数](#c%E8%AF%AD%E8%A8%80%E8%B0%83%E7%94%A8python3%E5%87%BD%E6%95%B0)
+- [C调Python](#c调python)
+    - [C语言调用Python3函数](#c语言调用python3函数)
 
 <!-- /TOC -->
 # Python 与C 的相互调用
