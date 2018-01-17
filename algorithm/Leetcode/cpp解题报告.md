@@ -22,6 +22,10 @@
 - [728. Self Dividing Numbers](#728-self-dividing-numbers)
 - [724. Find Pivot Index](#724-find-pivot-index)
 - [733. Flood Fill](#733-flood-fill)
+- [744. Find Smallest Letter Greater Than Target](#744-find-smallest-letter-greater-than-target)
+- [744. Find Smallest Letter Greater Than Target](#744-find-smallest-letter-greater-than-target)
+- [747. Largest Number At Least Twice of Others](#747-largest-number-at-least-twice-of-others)
+- [760. Find Anagram Mappings](#760-find-anagram-mappings)
 - [762. Prime Number of Set Bits in Binary Representation](#762-prime-number-of-set-bits-in-binary-representation)
 
 <!-- /TOC -->
@@ -237,6 +241,57 @@ nums[i] will be an integer between 0 and 49,999.
 
 # 733. Flood Fill
 > file: ALG733_Flood_Fill.cpp
+
+# 744. Find Smallest Letter Greater Than Target
+
+
+# 744. Find Smallest Letter Greater Than Target
+>file : ALG744_FindSmallestLetterGreaterThanTarget.cpp
+
+# 747. Largest Number At Least Twice of Others
+In a given integer array nums, there is always exactly one largest element.
+
+Find whether the largest element in the array is at least twice as much as every other number in the array.
+
+If it is, return the index of the largest element, otherwise return -1.
+
+Example 1:
+Input: nums = [3, 6, 1, 0]
+Output: 1
+Explanation: 6 is the largest integer, and for every other number in the array x,
+6 is more than twice as big as x.  The index of value 6 is 1, so we return 1.
+Example 2:
+Input: nums = [1, 2, 3, 4]
+Output: -1
+Explanation: 4 isn't at least as big as twice the value of 3, so we return -1.
+Note:
+nums will have a length in the range [1, 50].
+Every nums[i] will be an integer in the range [0, 99].
+>file: ALG747_LargestNumberAtLeastTwiceofOthers.cpp
+
+
+# 760. Find Anagram Mappings
+
+Given two lists Aand B, and B is an anagram of A. B is an anagram of A means B is made by randomizing the order of the elements in A.
+
+We want to find an index mapping P, from A to B. A mapping P[i] = j means the ith element in A appears in B at index j.
+
+These lists A and B may contain duplicates. If there are multiple answers, output any of them.
+
+For example, given
+
+A = [12, 28, 46, 32, 50]
+B = [50, 12, 32, 46, 28]
+We should return
+[1, 4, 3, 2, 0]
+as P[0] = 1 because the 0th element of A appears at B[1], and P[1] = 4 because the 1st element of A appears at B[4], and so on.
+Note:
+
+A, B have equal lengths in range [1, 100].
+A[i], B[i] are integers in range [0, 10^5].
+
+>file: ALG760_FindAnagramMappings.cpp
+
 
 
 
