@@ -4,36 +4,41 @@ ____
 
 <!-- TOC -->
 
-- [C++的特性](#c的特性)
-    - [构造和析构](#构造和析构)
-    - [常用的关键字](#常用的关键字)
+- [C++的特性](#c%E7%9A%84%E7%89%B9%E6%80%A7)
+    - [构造和析构](#%E6%9E%84%E9%80%A0%E5%92%8C%E6%9E%90%E6%9E%84)
+    - [常用的关键字](#%E5%B8%B8%E7%94%A8%E7%9A%84%E5%85%B3%E9%94%AE%E5%AD%97)
         - [static](#static)
-            - [首先是熟悉的面向过程：](#首先是熟悉的面向过程)
-            - [static在面向对象过程中的使用](#static在面向对象过程中的使用)
-        - [virtual关键字](#virtual关键字)
-        - [register关键字关键字](#register关键字关键字)
-        - [extern关键字](#extern关键字)
-    - [深拷贝浅拷贝](#深拷贝浅拷贝)
-    - [多态](#多态)
-    - [四种类型转换](#四种类型转换)
-        - [static_cast:](#static_cast)
-        - [const_cast](#const_cast)
-        - [dynamic_cast](#dynamic_cast)
-        - [reinterpret_cast](#reinterpret_cast)
-    - [友元函数](#友元函数)
-- [C++11的新特性](#c11的新特性)
-    - [智能指针](#智能指针)
-        - [shared_ptr](#shared_ptr)
-        - [weak_ptr](#weak_ptr)
-    - [右值引用以及移动语义](#右值引用以及移动语义)
-        - [什么是右值](#什么是右值)
-        - [右值使用的折叠规则](#右值使用的折叠规则)
-        - [move语义](#move语义)
-            - [Rvalue和Lvalue Reference的重载规则](#rvalue和lvalue-reference的重载规则)
-            - [返回Rvalue Reference](#返回rvalue-reference)
+            - [首先是熟悉的面向过程：](#%E9%A6%96%E5%85%88%E6%98%AF%E7%86%9F%E6%82%89%E7%9A%84%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%EF%BC%9A)
+            - [static在面向对象过程中的使用](#static%E5%9C%A8%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8)
+        - [virtual关键字](#virtual%E5%85%B3%E9%94%AE%E5%AD%97)
+        - [register关键字关键字](#register%E5%85%B3%E9%94%AE%E5%AD%97%E5%85%B3%E9%94%AE%E5%AD%97)
+        - [extern关键字](#extern%E5%85%B3%E9%94%AE%E5%AD%97)
+        - [explicit](#explicit)
+    - [深拷贝浅拷贝](#%E6%B7%B1%E6%8B%B7%E8%B4%9D%E6%B5%85%E6%8B%B7%E8%B4%9D)
+    - [多态](#%E5%A4%9A%E6%80%81)
+    - [四种类型转换](#%E5%9B%9B%E7%A7%8D%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2)
+        - [static_cast:](#staticcast)
+        - [const_cast](#constcast)
+        - [dynamic_cast](#dynamiccast)
+        - [reinterpret_cast](#reinterpretcast)
+    - [友元函数](#%E5%8F%8B%E5%85%83%E5%87%BD%E6%95%B0)
+- [C++11的新特性](#c11%E7%9A%84%E6%96%B0%E7%89%B9%E6%80%A7)
+    - [智能指针](#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88)
+        - [shared_ptr](#sharedptr)
+        - [weak_ptr](#weakptr)
+    - [右值引用以及移动语义](#%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8%E4%BB%A5%E5%8F%8A%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89)
+        - [什么是右值](#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%B3%E5%80%BC)
+        - [右值使用的折叠规则](#%E5%8F%B3%E5%80%BC%E4%BD%BF%E7%94%A8%E7%9A%84%E6%8A%98%E5%8F%A0%E8%A7%84%E5%88%99)
+        - [move语义](#move%E8%AF%AD%E4%B9%89)
+            - [Rvalue和Lvalue Reference的重载规则](#rvalue%E5%92%8Clvalue-reference%E7%9A%84%E9%87%8D%E8%BD%BD%E8%A7%84%E5%88%99)
+            - [返回Rvalue Reference](#%E8%BF%94%E5%9B%9Ervalue-reference)
+    - [for的遍历循环](#for%E7%9A%84%E9%81%8D%E5%8E%86%E5%BE%AA%E7%8E%AF)
+        - [`for(auto var : arr )`类型](#forauto-var-arr-%E7%B1%BB%E5%9E%8B)
+        - [for_each](#foreach)
+        - [`for each`](#for-each)
     - [async](#async)
-    - [多线程](#多线程)
-    - [lambda函数](#lambda函数)
+    - [多线程](#%E5%A4%9A%E7%BA%BF%E7%A8%8B)
+    - [lambda函数](#lambda%E5%87%BD%E6%95%B0)
 - [C++14](#c14)
 - [C++17](#c17)
     - [`fold expression`](#fold-expression)
@@ -423,6 +428,12 @@ int func()
 
 > 当编译器遇到extern int i时，他知道i肯定作为全局变量存在于某处。
 
+### explicit
+explicit关键字
+
+声明为explicit的构造函数不能在隐式转换中使用。
+
+
 
 ## 深拷贝浅拷贝
 
@@ -592,6 +603,44 @@ ____
 #### 返回Rvalue Reference
 
 
+## for的遍历循环
+这里简单看一下for的遍历循环。
+C++11新增了几种for的遍历循环以及for_each
+### `for(auto var : arr )`类型
+这里主要是看两种情况，
+```cpp
+vector<int> arr = { 1,2,3,4,5,6 };
+for (int &var : arr)
+{
+    var += 1;
+}
+```
+其中var的类型是可以明确或者使用auto，让编译器自己完成推到的，var这里可以使用`&`修饰表示为引用，当表示为引用的时候，修改var的值，会将arr中的值修改。
+> 这种使用方法在gcc和vs中均可以使用，同时，不需要额外的头文件已经其他的声明。
+
+### for_each
+使用for_each的时候需要增加头文件`#include <algorithm>`，该功能是提供在stl中的algorithm中的，传递有三个参数，分别为：起点、终点、操作。简而言之，可以如下使用：
+```cpp
+for_each(arr.begin(), arr.end(), [&](int &a)->void{a += 1; });
+```
+这里我们使用了lambda函数，如果不需要操作arr中的数值，可以将`[]`中设置为`=`。这里的事情在lambda部分再详细说明。
+> 同样的，该部分的内容在gcc和vs中均可以使用。
+
+### `for each`
+这里和上一个不同的位置是for_each不是一个整体，而是分开的两部分。但是使用方法很简单：
+```cpp
+for each (auto var in arr)
+{
+    cout << var << endl;
+}
+```
+但是这里是不能够使用引用的方式，也就是说，这种方式是不能够修改arr中的值的。如果使用引用的话，编译器会报错：
+```
+严重性	代码	说明	项目	文件	行	禁止显示状态
+错误	C3892	“var”: 不能给常量赋值	ConsoleApplication4	e:\codespace\cpphome\consoleapplication4\consoleapplication4\consoleapplication4.cpp	22	
+```
+> 注意这里，我只能够在vs上实验成功，不确定gcc是否实现了这个使用方法。
+
 
 ## async
 
@@ -662,6 +711,14 @@ int result = func1()+func2();
 
 > *首先，为什么要增加lambda这个东西呢？主要是为了**面向函数编程***
 
+这里我们需要关心一下，为什么lambda的底层实现。
+lambda的简单的使用方法如下：
+```cpp
+[ capture ]( params ) -> ret { body }
+```
+从反汇编来看，lambda函数转换成了一个函数对象实现的。
+
+捕获对象时，如果使用的
 
 
 

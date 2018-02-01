@@ -30,7 +30,7 @@ public:
         int max_pos = -1;
         if(nums.size()<=1)
         {
-            return -1;
+            return 0;
         }
         if(nums[0]>nums[1])
         {
