@@ -38,6 +38,7 @@ ____
         - [`for each`](#for-each)
     - [async](#async)
     - [多线程](#%E5%A4%9A%E7%BA%BF%E7%A8%8B)
+        - [C++11的6种内存序](#c11%E7%9A%846%E7%A7%8D%E5%86%85%E5%AD%98%E5%BA%8F)
     - [lambda函数](#lambda%E5%87%BD%E6%95%B0)
 - [C++14](#c14)
 - [C++17](#c17)
@@ -705,6 +706,9 @@ int result = func1()+func2();
 
 
 ## 多线程
+### C++11的6种内存序
+
+
 
 
 ## lambda函数
