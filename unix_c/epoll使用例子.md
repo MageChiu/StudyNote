@@ -389,9 +389,11 @@ epoll是linux下高并发服务器的完美方案，因为是基于事件触发�
  
 测试工具：stressmark
 因为加了适用与ab的代码，所以也可以适用ab进行压力测试。
+```cpp
 char buf[1000] = {0};
 sprintf(buf,"HTTP/1.0 200 OK\r\nContent-type: text/plain\r\n\r\n%s","Hello world!\n");
 send(socketfd,buf, strlen(buf),0);
+```
 
 ``` cpp
 #include <stdio.h>
