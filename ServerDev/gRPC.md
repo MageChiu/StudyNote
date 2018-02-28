@@ -24,3 +24,13 @@ gRPC的特征：
 - 支持主流开发语言（C, C++, Python, PHP, Ruby, NodeJS, C#, Objective-C、Golang、Java）
 - IDL (Interface Definition Language) 层使用了 Protocol Buffers, 非常适合团队的接口设计
 
+
+
+
+----
+>>参考资料  
+> [1]. http://doc.oschina.net/grpc?t=57966  
+> [2]. https://grpc.io/docs/quickstart/cpp.html  
+> [3]. 
+
+
