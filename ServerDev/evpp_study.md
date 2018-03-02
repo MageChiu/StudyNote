@@ -27,6 +27,7 @@ github地址为https://github.com/Qihoo360/evpp
 - [upd模块](#upd%E6%A8%A1%E5%9D%97)
 - [基础模块](#%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9D%97)
     - [事件线程池](#%E4%BA%8B%E4%BB%B6%E7%BA%BF%E7%A8%8B%E6%B1%A0)
+        - [EventLoopThreadPool中继承了ServerStatus类](#eventloopthreadpool%E4%B8%AD%E7%BB%A7%E6%89%BF%E4%BA%86serverstatus%E7%B1%BB)
     - [buffer](#buffer)
     - [http](#http)
 
@@ -58,46 +59,185 @@ http的客户端连接池，
 class EVPP_EXPORT EventLoopThreadPool : public ServerStatus {
 public:
     typedef std::function<void()> DoneCallback;
-
     EventLoopThreadPool(EventLoop* base_loop, uint32_t thread_num);
     ~EventLoopThreadPool();
-
     bool Start(bool wait_thread_started = false);
-
     void Stop(bool wait_thread_exited = false);
     void Stop(DoneCallback fn);
-
-    // @brief Join all the working thread. If you forget to call this method,
-    // it will be invoked automatically in the destruct method ~EventLoopThreadPool().
-    // @note DO NOT call this method from any of the working thread.
-    void Join();
-
-    // @brief Reinitialize some data fields after a fork
-    void AfterFork();
+    void Join();    /* join所有线程，如果没有使用该方法，会在析构的时候，自动调用。不要在工作线程中使用这个方法*/
+    void AfterFork();// @brief Reinitialize some data fields after a fork
 public:
     EventLoop* GetNextLoop();
     EventLoop* GetNextLoopWithHash(uint64_t hash);
-
     uint32_t thread_num() const;
-
 private:
     void Stop(bool wait_thread_exit, DoneCallback fn);
     void OnThreadStarted(uint32_t count);
     void OnThreadExited(uint32_t count);
-
 private:
     EventLoop* base_loop_;
-
     uint32_t thread_num_ = 0;
     std::atomic<int64_t> next_ = { 0 };
-
     DoneCallback stopped_cb_;
-
     typedef std::shared_ptr<EventLoopThread> EventLoopThreadPtr;
     std::vector<EventLoopThreadPtr> threads_;
 };
 ```
 
+
+### EventLoopThreadPool中继承了ServerStatus类
+ServerStaus类中，主要是定义了一些状态信息，
+```cpp
+class ServerStatus {
+public:
+    enum Status {
+        kNull = 0,
+        kInitializing = 1,
+        kInitialized = 2,
+        kStarting = 3,
+        kRunning = 4,
+        kStopping = 5,
+        kStopped = 6,
+    };
+    enum SubStatus {
+        kSubStatusNull = 0,
+        kStoppingListener = 1,
+        kStoppingThreadPool = 2,
+    };
+    std::string StatusToString() const {
+        H_CASE_STRING_BIGIN(status_.load());
+        H_CASE_STRING(kNull);
+        H_CASE_STRING(kInitialized);
+        H_CASE_STRING(kRunning);
+        H_CASE_STRING(kStopping);
+        H_CASE_STRING(kStopped);
+        H_CASE_STRING_END();
+    }
+    bool IsRunning() const {
+        return status_.load() == kRunning;
+    }
+    bool IsStopped() const {
+        return status_.load() == kStopped;
+    }
+    bool IsStopping() const {
+        return status_.load() == kStopping;
+    }
+protected:
+    std::atomic<Status> status_ = { kNull };
+    std::atomic<SubStatus> substatus_ = { kSubStatusNull };
+};
+```
+其中宏为
+```cpp
+#define H_CASE_STRING_BIGIN(state) switch(state){
+#define H_CASE_STRING(state) case state:return #state;break;
+#define H_CASE_STRING_END()  default:return "Unknown";break;}
+```
+主要是将enum定义的状态类型转换为string类型返回出去。可见， ServerStatus定义了两个protected修饰的数据变量，采用了C++11的原子模板类型，保护Status和SubStus修改和读取的原子性。不过这里面substatus_一直没有被使用过，可能是在外面需要使用。
+
+
+那么接下来看一下，其中主要的元素：
+**`EventLoop* base_loop_`**，该类型是类EventLoop，下面是EventLoop的代码：
+```cpp
+class EVPP_EXPORT EventLoop : public ServerStatus {
+public:
+    typedef std::function<void()> Functor;
+public:
+    EventLoop();
+
+    // Build an EventLoop using an existing event_base object,
+    // so we can embed an EventLoop object into the old applications based on libevent
+    // NOTE: Be careful to deal with the destructing work of event_base_ and watcher_ objects.
+    explicit EventLoop(struct event_base* base);
+    ~EventLoop();
+
+    // @brief Run the IO Event driving loop forever
+    // @note It must be called in the IO Event thread
+    void Run(); //只能在IO事件线程中被使用
+
+    // @brief Stop the event loop
+    void Stop();
+
+    // @brief Reinitialize some data fields after a fork
+    void AfterFork();
+
+    InvokeTimerPtr RunAfter(double delay_ms, const Functor& f);
+    InvokeTimerPtr RunAfter(Duration delay, const Functor& f);
+
+    // RunEvery executes Functor f every period interval time.
+    InvokeTimerPtr RunEvery(Duration interval, const Functor& f);
+
+    void RunInLoop(const Functor& handler);
+    void QueueInLoop(const Functor& handler);
+
+public:
+
+    InvokeTimerPtr RunAfter(double delay_ms, Functor&& f);
+    InvokeTimerPtr RunAfter(Duration delay, Functor&& f);
+
+    // RunEvery executes Functor f every period interval time.
+    InvokeTimerPtr RunEvery(Duration interval, Functor&& f);
+
+    void RunInLoop(Functor&& handler);
+    void QueueInLoop(Functor&& handler);
+
+    // Getter and Setter
+public:
+    struct event_base* event_base() {
+        return evbase_;
+    }
+    bool IsInLoopThread() const {
+        return tid_ == std::this_thread::get_id();
+    }
+    void set_context(const Any& c) {
+        context_[0] = c;
+    }
+    const Any& context() const {
+        return context_[0];
+    }
+    void set_context(int index, const Any& c) {
+        assert(index < kContextCount && index >= 0);
+        context_[index] = c;
+    }
+    const Any& context(int index) const {
+        assert(index < kContextCount && index >= 0);
+        return context_[index];
+    }
+    int pending_functor_count() const {
+        return pending_functor_count_.load();
+    }
+    const std::thread::id& tid() const {
+        return tid_;
+    }
+private:
+    void Init();
+    void InitNotifyPipeWatcher();
+    void StopInLoop();
+    void DoPendingFunctors();
+    size_t GetPendingQueueSize();
+    bool IsPendingQueueEmpty();
+private:
+    struct event_base* evbase_;
+    bool create_evbase_myself_;
+    std::thread::id tid_;
+    enum { kContextCount = 16, };
+    Any context_[kContextCount];
+    std::mutex mutex_;
+    // We use this to notify the thread when we put a task into the pending_functors_ queue
+    std::shared_ptr<PipeEventWatcher> watcher_;
+    // When we put a task into the pending_functors_ queue,
+    // we need to notify the thread to execute it. But we don't want to notify repeatedly.
+    std::atomic<bool> notified_;
+#ifdef H_HAVE_BOOST
+    boost::lockfree::queue<Functor*>* pending_functors_;
+#elif defined(H_HAVE_CAMERON314_CONCURRENTQUEUE)
+    moodycamel::ConcurrentQueue<Functor>* pending_functors_;
+#else
+    std::vector<Functor>* pending_functors_; // @Guarded By mutex_
+#endif
+    std::atomic<int> pending_functor_count_;
+};
+```
 
 ## buffer
 > 构造函数前面增加了explicit修饰，可以阻止不应该允许的经过转换构造函数进行的隐式转换的发生
