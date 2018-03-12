@@ -1,3 +1,8 @@
+Item 19: Use std::shared_ptr for shared-ownership resource management
+
+
+
+
 这里要提及的首先有三点：
 
  - shared_ptr是原始指针大小的两倍。 
@@ -80,3 +85,7 @@ int main()
 ```
 
 显然这种错误是致命的，因为有可能是发生在析构函数中，接下来还会导致资源泄漏，原本我们是为了防止资源泄漏的。所以，这里建议尽我们在使用shared_ptr的时候应当避免使用raw pointer创建shared_ptr，也就是尽量避免。
+
+
+
+
