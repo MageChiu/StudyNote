@@ -182,5 +182,22 @@ TCP通信的基本类，basic_stream_socket的tcp协议特例化
 ### 
 
 
-###
+### 简单的实例
+这里是使用Clion去开发的，需要修改下CMakefile.txt
+完整的CMakeList.txt的写法如下：
+``` makefile
+cmake_minimum_required(VERSION 3.9)
+project(basio_server)
+
+set(CMAKE_CXX_STANDARD 11)
+set(Boost_USE_STATIC_LIBS ON)
+find_package(Boost 1.66.0 COMPONENTS log thread system regex context REQUIRED)
+
+add_executable(basio_server main.cpp)
+#链接该boost库
+target_link_libraries(basio_server ${Boost_LIBRARIES} pthread)
+#添加
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lboost_system -lpthread")
+add_definitions(${CMAKE_CXX_FLAGS})
+```
 
