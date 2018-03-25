@@ -238,6 +238,11 @@ private:
     std::atomic<int> pending_functor_count_;
 };
 ```
+EventLoop是IO Event驱动的核心，采用了reactor模型。这个类是对event_base的封装，并且提供了一个简单的使用方式。
+
+
+
+
 
 ## buffer
 > 构造函数前面增加了explicit修饰，可以阻止不应该允许的经过转换构造函数进行的隐式转换的发生
