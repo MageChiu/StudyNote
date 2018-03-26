@@ -19,15 +19,15 @@ github地址为https://github.com/Qihoo360/evpp
 
 <!-- TOC -->
 
-- [http模块](#http%E6%A8%A1%E5%9D%97)
-    - [http::Server类](#httpserver%E7%B1%BB)
-    - [http::Service类](#httpservice%E7%B1%BB)
-- [httpc模块](#httpc%E6%A8%A1%E5%9D%97)
-    - [httpc::ConnPool类](#httpcconnpool%E7%B1%BB)
-- [upd模块](#upd%E6%A8%A1%E5%9D%97)
-- [基础模块](#%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9D%97)
-    - [事件线程池](#%E4%BA%8B%E4%BB%B6%E7%BA%BF%E7%A8%8B%E6%B1%A0)
-        - [EventLoopThreadPool中继承了ServerStatus类](#eventloopthreadpool%E4%B8%AD%E7%BB%A7%E6%89%BF%E4%BA%86serverstatus%E7%B1%BB)
+- [http模块](#http模块)
+    - [http::Server类](#httpserver类)
+    - [http::Service类](#httpservice类)
+- [httpc模块](#httpc模块)
+    - [httpc::ConnPool类](#httpcconnpool类)
+- [upd模块](#upd模块)
+- [基础模块](#基础模块)
+    - [事件线程池](#事件线程池)
+        - [EventLoopThreadPool中继承了ServerStatus类](#eventloopthreadpool中继承了serverstatus类)
     - [buffer](#buffer)
     - [http](#http)
 
@@ -238,8 +238,33 @@ private:
     std::atomic<int> pending_functor_count_;
 };
 ```
-EventLoop是IO Event驱动的核心，采用了reactor模型。这个类是对event_base的封装，并且提供了一个简单的使用方式。
+EventLoop是IO Event驱动的核心，采用了reactor模型。这个类是对event_base的封装，并且提供了一个简单的使用方式。所以，我们可以看到，EventLoop的构造函数是有两个，一个是默认构造函数，另一个则是基于event_base指针进行构造的，libevent部分的内容在后面一个里面在自己看。EventLoop可以使用一个已经存在的event_base对象来进行创建，这样就可以使用的evpp应用于旧的使用libevent的应用。
+``` cpp
+class EVPP_EXPORT EventLoop : public ServerStatus {
+private:
+    struct event_base* evbase_;
+    bool create_evbase_myself_;
+    std::thread::id tid_;
+    enum { kContextCount = 16, };
+    Any context_[kContextCount];
 
+    std::mutex mutex_;
+    // We use this to notify the thread when we put a task into the pending_functors_ queue
+    std::shared_ptr<PipeEventWatcher> watcher_;
+    // When we put a task into the pending_functors_ queue,
+    // we need to notify the thread to execute it. But we don't want to notify repeatedly.
+    std::atomic<bool> notified_;
+#ifdef H_HAVE_BOOST
+    boost::lockfree::queue<Functor*>* pending_functors_;
+#elif defined(H_HAVE_CAMERON314_CONCURRENTQUEUE)
+    moodycamel::ConcurrentQueue<Functor>* pending_functors_;
+#else
+    std::vector<Functor>* pending_functors_; // @Guarded By mutex_
+#endif
+    std::atomic<int> pending_functor_count_;
+}
+```
+如上是，EventLoop的数据成员，这里面使用了C++11比较多的部分，包含了thread，mutex，智能指针，以及atomic模板原子的实现。同时，我们也可以看到，如果系统支持的话，`pending_functors_`可以是boost里面的无锁队列，或者是ConcurrentQueue，这个是evpp引入的一个库。
 
 
 
