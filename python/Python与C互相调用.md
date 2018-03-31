@@ -1,14 +1,18 @@
 <!-- TOC -->
 
-- [Python 与C 的相互调用](#python-与c-的相互调用)
-- [Python调C](#python调c)
-    - [获取参数](#获取参数)
+- [Python 与C 的相互调用](#python-%E4%B8%8Ec-%E7%9A%84%E7%9B%B8%E4%BA%92%E8%B0%83%E7%94%A8)
+- [Python调C](#python%E8%B0%83c)
+    - [获取参数](#%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0)
         - [API Function](#api-function)
-- [参考资料](#参考资料)
+        - [参数类型](#%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B)
+        - [字典获取并读取](#%E5%AD%97%E5%85%B8%E8%8E%B7%E5%8F%96%E5%B9%B6%E8%AF%BB%E5%8F%96)
+    - [返回结果](#%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C)
+        - [返回一个字典对象](#%E8%BF%94%E5%9B%9E%E4%B8%80%E4%B8%AA%E5%AD%97%E5%85%B8%E5%AF%B9%E8%B1%A1)
+- [参考资料](#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99)
     - [python3](#python3)
     - [python2](#python2)
-- [C调Python](#c调python)
-    - [C语言调用Python3函数](#c语言调用python3函数)
+- [C调Python](#c%E8%B0%83python)
+    - [C语言调用Python3函数](#c%E8%AF%AD%E8%A8%80%E8%B0%83%E7%94%A8python3%E5%87%BD%E6%95%B0)
 
 <!-- /TOC -->
 # Python 与C 的相互调用
@@ -94,9 +98,55 @@ function | usage
 int PyArg_ParseTuple(PyObject *args, const char *format, ...)| 分析函数的传入参数，成功返回true，失败返回false，并抛出异常
 int PyArg_VaParse(PyObject *args, const char *format, va_list vargs) | 和PyArg_ParseTuple完全一样除了增加增加了一个参数接收列表
 
+在python官方提供的教程说明里面[官方介绍](https://docs.python.org/3/c-api/arg.html#c.PyArg_ParseTuple)
+- `int PyArg_ParseTupleAndKeywords(PyObject *args, PyObject *kw, const char *format, char *keywords[], ...)`  
+    Parse the parameters of a function that takes both positional and keyword parameters into local variables. The keywords argument is a NULL-terminated array of keyword parameter names. Empty names denote positional-only parameters. Returns true on success; on failure, it returns false and raises the appropriate exception.
+
+    Changed in version 3.6: Added support for positional-only parameters.
+
+- `int PyArg_VaParseTupleAndKeywords(PyObject *args, PyObject *kw, const char *format, char *keywords[], va_list vargs)`
+Identical to PyArg_ParseTupleAndKeywords(), except that it accepts a va_list rather than a variable number of arguments.
+
+- `int PyArg_ValidateKeywordArguments(PyObject *)`
+    Ensure that the keys in the keywords argument dictionary are strings. This is only needed if PyArg_ParseTupleAndKeywords() is not used, since the latter already does this check.
 
 
+### 参数类型
+在上面的函数中有一些format参数类型，下面详细说一些。对于这样的类型`#`，例如`s#`,`y#`,等，这些类型是参数的长度（int or Py_ssize_t）是由定义的宏（PY_SSIZE_T_CLEAN）控制的（定义在Python.h?<看了源码，我在Python3.5的头文件里面没有找到PY_SSIZE_T_CLEAN的定义>）。如果定义了PY_SSIZE_T_CLEAN的话，那么长度就应该是Py_ssize_t类型而不是int。Python的官网上说后面会仅支持Py_ssize_t，不支持使用int表示这些类型的长度，并且建议定义PY_SSIZE_T_CLEAN这个宏。
 
+format | Python中的类型 | C中的类型 | 说明
+:--:|:--:|:--:|:--:
+s   |   str  | const char*  | 把python中Unicode编码的object转换为C中指向字符串的指针。这个
+-|-|-|-
+b   | int | unsigned char | 把Python中的非负整型转换为一个字节的非负整型, 也就是 C 中的 `unsigned char`
+B   | int | unsigned char | 把Python中的整型转换为一个字节的整型，但是没有溢出检查，存放在 C 中的`unsigned char`
+h   | int | short int | 把python中的整型转为`short int`
+H   | int | unsigned short int  |  without overflow checking.
+i   |int |int | Convert a Python integer to a plain C int.
+I   | int   | unsigned int | without overflow checking.
+l   | int   | long int |Convert a Python integer to a C long int.
+k   | int   | unsigned long | without overflow checking.
+L   | int   | long long | 
+K   | int   | unsigned long long |  without overflow checking.
+n   | int   | Py_ssize_t | 把Python中的整型转换为 C中的 Py_ssize_t.
+c   | bytes or bytearray of length 1 | char | 把Python byte(represented as a bytes or bytearray object of length 1)转换为 C 中的char [Changed in version 3.3: Allow bytearray objects.]
+C | str of length 1 | int | Convert a Python character, represented as a str object of length 1, to a C int.
+f |float |float | Convert a Python floating point number to a C float.
+d | float | double |Convert a Python floating point number to a C double.
+D |complex| |Py_complex | 把Python中的复数(complex number)转换为C 中的Py_complex结构
+
+### 字典获取并读取
+
+## 返回结果
+
+返回值
+format | python中的类型 | C语言类型 | 说明
+:---:|:--:|:--:|:--:
+s    | str or None | char *         | 把一个带有结束符的字符串转换成python中的str，采用utf-8编码，如果C的字符串指针为空，那么返回None
+s#   | str or None  | char* , int   |
+
+
+### 返回一个字典对象
 
 # 参考资料
 ## python3
