@@ -136,6 +136,19 @@ d | float | double |Convert a Python floating point number to a C double.
 D |complex| |Py_complex | 把Python中的复数(complex number)转换为C 中的Py_complex结构
 
 ### 字典获取并读取
+这里的获取方式分为两种，一般来说可以是从输入的参数列表中，获取dict这个对象，也可以是从参数中使用`key_list`进行解析。其实获取字典，可以认为是获取PyObject对象。从官网的说明(https://docs.python.org/3/c-api/arg.html#other-objects)中可以了解到基本的获取方式。
+1. `O (object) [PyObject *]`
+    把一个Python的object（没有转换）存放到一个C指针中。C指针接收到这个对象，但是这个对象的引用计数并不会增加。存放的指针也不会为空。
+2. `O! (object) [typeobject, PyObject *]`
+    把一个Python的object存放大一个指针中，和`O`类似，但是第一个参数是Python类型对象的地址，第二个参数是用于存放具体的值的C指针，如果Python obejct没有需要的类型，那么就会抛出异常。
+3. `O& (object) [converter, anything]`
+    通过一个转换函数，转换一个Python对象到一个C变量中。第一个变量是转换用的function，第二个是转换后存放的C指针的值(of arbitrary type)，转换后是`void *`。转换函数按照如下调用：
+    ``` cpp
+    status = converter(object, address);
+    ```
+    这里，obejct是指Python的obejct，address是被`void *`类型的参数，被传递给了函数`PyArg_Parse*()`。函数返回值为1表示成功，返回0表示转换失败。如果失败，转换函数应该抛出异常，并保持传入地址的的内容不变，也就是不会修改address中的内容。
+    如果转换函数返回`Py_CLEANUP_SUPPORTED`,则当参数解析最终失败时，他可能会再次调用，从而使得转换函数有机会释放已经分配的任何内存。在第二次调用中，obejct这个参数为NULL，address会和原始调用使用相同的值。`Py_CLEANUP_SUPPORTED`是在version 3.1中加入的。
+
 
 ## 返回结果
 
@@ -143,8 +156,17 @@ D |complex| |Py_complex | 把Python中的复数(complex number)转换为C 中的
 format | python中的类型 | C语言类型 | 说明
 :---:|:--:|:--:|:--:
 s    | str or None | char *         | 把一个带有结束符的字符串转换成python中的str，采用utf-8编码，如果C的字符串指针为空，那么返回None
-s#   | str or None  | char* , int   |
+s#   | str or None  | char* , int   | 
 
+例子：
+``` cpp
+int str_len;
+const char* c_ptr;
+if(!PyArg_ParseTuple(args, "s#", &c_ptr, &str_len))
+{
+    return NULL;
+}
+```
 
 ### 返回一个字典对象
 
@@ -202,4 +224,8 @@ PyMODINIT_FUNC initpyTestLib(void)
 
 ## C语言调用Python3函数
 
-这里
+这里可以通过参数传递获取由Python传递过来的函数。
+
+
+
+
